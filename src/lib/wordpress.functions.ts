@@ -40,26 +40,34 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
 }
 
-export const getPosts = createServerFn({ method: "GET" }).handler(async () => {
-  const data = await wpFetch(
-    `/rest/v1.1/sites/${SITE}/posts/?number=20&fields=ID,slug,title,excerpt,date,modified,URL,featured_image,author,tags,categories`,
-  );
-  const posts: WPPost[] = (data.posts || []).map((p: any) => ({
-    ID: p.ID,
-    slug: p.slug,
-    title: stripHtml(p.title),
-    excerpt: stripHtml(p.excerpt).slice(0, 240),
-    content: "",
-    date: p.date,
-    modified: p.modified,
-    URL: p.URL,
-    featured_image: p.featured_image || "",
-    author: { name: p.author?.name || "" },
-    tags: p.tags || {},
-    categories: p.categories || {},
-  }));
-  return { posts, found: data.found || posts.length };
-});
+const PAGE_SIZE = 9;
+
+export const getPosts = createServerFn({ method: "GET" })
+  .inputValidator((data: { page?: number } | undefined) => ({
+    page: Math.max(1, Number(data?.page) || 1),
+  }))
+  .handler(async ({ data }) => {
+    const { page } = data;
+    const url = `/rest/v1.1/sites/${SITE}/posts/?number=${PAGE_SIZE}&page=${page}&fields=ID,slug,title,excerpt,date,modified,URL,featured_image,author,tags,categories`;
+    const result = await wpFetch(url);
+    const posts: WPPost[] = (result.posts || []).map((p: any) => ({
+      ID: p.ID,
+      slug: p.slug,
+      title: stripHtml(p.title),
+      excerpt: stripHtml(p.excerpt).slice(0, 240),
+      content: "",
+      date: p.date,
+      modified: p.modified,
+      URL: p.URL,
+      featured_image: p.featured_image || "",
+      author: { name: p.author?.name || "" },
+      tags: p.tags || {},
+      categories: p.categories || {},
+    }));
+    const found = result.found || posts.length;
+    const totalPages = Math.max(1, Math.ceil(found / PAGE_SIZE));
+    return { posts, found, page, totalPages, pageSize: PAGE_SIZE };
+  });
 
 export const getPostBySlug = createServerFn({ method: "GET" })
   .inputValidator((data: { slug: string }) => data)
