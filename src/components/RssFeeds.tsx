@@ -11,10 +11,11 @@ type Feed = {
   url: string;
   title: string;
   items: FeedItem[];
+  status: "loading" | "ready" | "error";
   error?: string;
 };
 
-const FEED_URLS = [
+const FEED_SOURCES = [
   {
     url: "https://worldsold.wixsite.com/world-sold/en/blog-feed.xml",
     title: "World Sold — Blog",
@@ -25,68 +26,159 @@ const FEED_URLS = [
   },
 ];
 
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+const STORAGE_KEY = "rss-feed-cache-v1";
+
+type CacheEntry = { items: FeedItem[]; ts: number };
+const memoryCache = new Map<string, CacheEntry>();
+const inflight = new Map<string, Promise<FeedItem[]>>();
+
+function readPersistedCache(): Record<string, CacheEntry> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.sessionStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function writePersistedCache(data: Record<string, CacheEntry>) {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch {
+    /* ignore quota */
+  }
+}
+
+function getCached(url: string): FeedItem[] | null {
+  const mem = memoryCache.get(url);
+  if (mem && Date.now() - mem.ts < CACHE_TTL_MS) return mem.items;
+  const persisted = readPersistedCache()[url];
+  if (persisted && Date.now() - persisted.ts < CACHE_TTL_MS) {
+    memoryCache.set(url, persisted);
+    return persisted.items;
+  }
+  return null;
+}
+
+function setCached(url: string, items: FeedItem[]) {
+  const entry = { items, ts: Date.now() };
+  memoryCache.set(url, entry);
+  const persisted = readPersistedCache();
+  persisted[url] = entry;
+  writePersistedCache(persisted);
+}
+
 function stripHtml(html: string): string {
   const text = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-  return text.length > 220 ? text.slice(0, 220) + "…" : text;
+  return text.length > 260 ? text.slice(0, 260) + "…" : text;
 }
 
 function parseFeed(xml: string): FeedItem[] {
   if (typeof window === "undefined") return [];
+  const doc = new DOMParser().parseFromString(xml, "text/xml");
+  if (doc.querySelector("parsererror")) return [];
+  const items = Array.from(doc.querySelectorAll("item, entry"));
+  return items.map((item) => {
+    const title = item.querySelector("title")?.textContent?.trim() ?? "Untitled";
+    const linkEl = item.querySelector("link");
+    const link =
+      linkEl?.textContent?.trim() ||
+      linkEl?.getAttribute("href") ||
+      item.querySelector("guid")?.textContent?.trim() ||
+      "#";
+    const desc =
+      item.querySelector("description")?.textContent ??
+      item.querySelector("summary")?.textContent ??
+      item.querySelector("content")?.textContent ??
+      "";
+    const pubDate =
+      item.querySelector("pubDate")?.textContent ??
+      item.querySelector("updated")?.textContent ??
+      undefined;
+    return { title, link, snippet: stripHtml(desc), pubDate };
+  });
+}
+
+async function fetchFeed(url: string): Promise<FeedItem[]> {
+  const cached = getCached(url);
+  if (cached) return cached;
+  const existing = inflight.get(url);
+  if (existing) return existing;
+
+  const proxies = [
+    (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    (u: string) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  ];
+
+  const promise = (async () => {
+    let lastErr: unknown;
+    for (const make of proxies) {
+      try {
+        const res = await fetch(make(url));
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const xml = await res.text();
+        const items = parseFeed(xml);
+        if (items.length > 0) {
+          setCached(url, items);
+          return items;
+        }
+        lastErr = new Error("Empty feed");
+      } catch (e) {
+        lastErr = e;
+      }
+    }
+    throw lastErr instanceof Error ? lastErr : new Error("Feed unavailable");
+  })();
+
+  inflight.set(url, promise);
   try {
-    const doc = new DOMParser().parseFromString(xml, "text/xml");
-    const items = Array.from(doc.querySelectorAll("item, entry")).slice(0, 5);
-    return items.map((item) => {
-      const title = item.querySelector("title")?.textContent?.trim() ?? "Untitled";
-      const linkEl = item.querySelector("link");
-      const link =
-        linkEl?.textContent?.trim() ||
-        linkEl?.getAttribute("href") ||
-        item.querySelector("guid")?.textContent?.trim() ||
-        "#";
-      const desc =
-        item.querySelector("description")?.textContent ??
-        item.querySelector("summary")?.textContent ??
-        item.querySelector("content")?.textContent ??
-        "";
-      const pubDate =
-        item.querySelector("pubDate")?.textContent ??
-        item.querySelector("updated")?.textContent ??
-        undefined;
-      return { title, link, snippet: stripHtml(desc), pubDate };
-    });
-  } catch {
-    return [];
+    return await promise;
+  } finally {
+    inflight.delete(url);
   }
 }
 
 export function RssFeeds() {
-  const [feeds, setFeeds] = useState<Feed[]>(
-    FEED_URLS.map((f) => ({ ...f, items: [] })),
+  const [feeds, setFeeds] = useState<Feed[]>(() =>
+    FEED_SOURCES.map((f) => {
+      const cached = typeof window !== "undefined" ? getCached(f.url) : null;
+      return cached
+        ? { ...f, items: cached, status: "ready" as const }
+        : { ...f, items: [], status: "loading" as const };
+    }),
   );
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    async function load() {
-      const results = await Promise.all(
-        FEED_URLS.map(async (f) => {
-          try {
-            const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(f.url)}`;
-            const res = await fetch(proxy);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const xml = await res.text();
-            return { ...f, items: parseFeed(xml) };
-          } catch (e: any) {
-            return { ...f, items: [], error: e?.message ?? "Could not load feed" };
-          }
-        }),
-      );
-      if (!cancelled) {
-        setFeeds(results);
-        setLoading(false);
-      }
-    }
-    load();
+    FEED_SOURCES.forEach((source, idx) => {
+      const cached = getCached(source.url);
+      if (cached) return;
+      fetchFeed(source.url)
+        .then((items) => {
+          if (cancelled) return;
+          setFeeds((prev) => {
+            const next = [...prev];
+            next[idx] = { ...source, items, status: "ready" };
+            return next;
+          });
+        })
+        .catch((e: Error) => {
+          if (cancelled) return;
+          setFeeds((prev) => {
+            const next = [...prev];
+            next[idx] = {
+              ...source,
+              items: [],
+              status: "error",
+              error: e.message,
+            };
+            return next;
+          });
+        });
+    });
     return () => {
       cancelled = true;
     };
@@ -122,44 +214,76 @@ export function RssFeeds() {
               </a>
             </div>
 
-            {loading && feed.items.length === 0 && !feed.error && (
-              <p className="text-sm text-muted-foreground">Loading feed…</p>
-            )}
-            {feed.error && (
-              <p className="text-sm text-muted-foreground">
-                Could not load this feed right now.
-              </p>
+            {feed.status === "loading" && (
+              <ul className="space-y-5" aria-busy="true">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <li key={i} className="border-b border-border pb-4 last:border-0">
+                    <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+                    <div className="mt-2 h-3 w-1/3 animate-pulse rounded bg-muted" />
+                    <div className="mt-3 h-3 w-full animate-pulse rounded bg-muted" />
+                    <div className="mt-1 h-3 w-5/6 animate-pulse rounded bg-muted" />
+                  </li>
+                ))}
+              </ul>
             )}
 
-            <ul className="space-y-5">
-              {feed.items.map((item, i) => (
-                <li key={i} className="border-b border-border pb-4 last:border-0 last:pb-0">
-                  <a
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            {feed.status === "error" && (
+              <div className="rounded-md border border-border bg-secondary p-4 text-sm text-muted-foreground">
+                Could not load this feed right now. You can still
+                {" "}
+                <a
+                  href={feed.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                >
+                  open it directly
+                </a>
+                .
+              </div>
+            )}
+
+            {feed.status === "ready" && (
+              <ul className="space-y-5">
+                {feed.items.map((item, i) => (
+                  <li
+                    key={`${feed.url}-${i}`}
+                    className="border-b border-border pb-4 last:border-0 last:pb-0"
                   >
-                    <h4 className="text-base font-semibold text-foreground group-hover:text-primary">
-                      {item.title}
-                    </h4>
-                    {item.pubDate && (
-                      <time className="mt-1 block text-xs uppercase tracking-wider text-muted-foreground">
-                        {new Date(item.pubDate).toLocaleDateString("en-GB", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                          timeZone: "UTC",
-                        })}
-                      </time>
-                    )}
-                    {item.snippet && (
-                      <p className="mt-2 text-sm text-muted-foreground">{item.snippet}</p>
-                    )}
-                  </a>
-                </li>
-              ))}
-            </ul>
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <h4 className="text-base font-semibold text-foreground group-hover:text-primary">
+                        {item.title}
+                      </h4>
+                      {item.pubDate && (
+                        <time className="mt-1 block text-xs uppercase tracking-wider text-muted-foreground">
+                          {(() => {
+                            const d = new Date(item.pubDate!);
+                            return Number.isNaN(d.getTime())
+                              ? item.pubDate
+                              : d.toLocaleDateString("en-GB", {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                  timeZone: "UTC",
+                                });
+                          })()}
+                        </time>
+                      )}
+                      {item.snippet && (
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          {item.snippet}
+                        </p>
+                      )}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ))}
       </div>
