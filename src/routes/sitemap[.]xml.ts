@@ -39,6 +39,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const now = new Date().toISOString();
         const urls = [
           `<url><loc>${origin}/</loc><lastmod>${now}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>`,
+          `<url><loc>${origin}/feed.xml</loc><lastmod>${now}</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>`,
           ...posts.map(
             (p) =>
               `<url><loc>${origin}/blog/${p.slug}</loc><lastmod>${new Date(p.modified).toISOString()}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`,
