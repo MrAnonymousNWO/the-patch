@@ -1,31 +1,42 @@
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
-const navLinks = [
-  { type: "internal" as const, to: "/", label: "Home", exact: true },
-  { type: "hash" as const, to: "/", hash: "latest-posts", label: "Articles" },
-  { type: "hash" as const, to: "/", hash: "about-the-patch", label: "About" },
-  { type: "external" as const, href: "https://patch98.wordpress.com/", label: "Patch98" },
-  { type: "external" as const, href: "https://electric-paradise.start.page", label: "Electric Paradise" },
-  { type: "external" as const, href: "/sitemap.xml", label: "Sitemap" },
+type NavLink =
+  | { type: "internal"; to: "/"; label: string; exact?: boolean }
+  | { type: "hash"; to: "/"; hash: string; label: string }
+  | { type: "external"; href: string; label: string };
+
+const navLinks: NavLink[] = [
+  { type: "internal", to: "/", label: "Home", exact: true },
+  { type: "hash", to: "/", hash: "latest-posts", label: "Articles" },
+  { type: "hash", to: "/", hash: "about-the-patch", label: "About" },
+  { type: "external", href: "https://patch98.wordpress.com/", label: "Patch98" },
+  { type: "external", href: "https://electric-paradise.start.page", label: "Electric Paradise" },
+  { type: "external", href: "/sitemap.xml", label: "Sitemap" },
 ];
+
+const baseCls = "transition-colors text-foreground hover:text-primary";
+const activeCls = "text-primary underline underline-offset-4";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const hash = useRouterState({ select: (s) => s.location.hash });
 
-  const renderLink = (
-    link: (typeof navLinks)[number],
-    onClick?: () => void,
-  ) => {
-    const cls = "text-foreground hover:text-primary";
+  // Auto-close mobile menu on route change
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname, hash]);
+
+  const renderLink = (link: NavLink, onClick?: () => void) => {
     if (link.type === "internal") {
+      const isActive = pathname === "/" && !hash;
       return (
         <Link
           to={link.to}
           activeOptions={{ exact: link.exact }}
-          activeProps={{ className: "text-primary underline underline-offset-4" }}
-          className={cls}
+          className={`${baseCls} ${isActive ? activeCls : ""}`}
           onClick={onClick}
         >
           {link.label}
@@ -33,8 +44,14 @@ export function SiteHeader() {
       );
     }
     if (link.type === "hash") {
+      const isActive = pathname === "/" && hash === link.hash;
       return (
-        <Link to={link.to} hash={link.hash} className={cls} onClick={onClick}>
+        <Link
+          to={link.to}
+          hash={link.hash}
+          className={`${baseCls} ${isActive ? activeCls : ""}`}
+          onClick={onClick}
+        >
           {link.label}
         </Link>
       );
@@ -44,7 +61,7 @@ export function SiteHeader() {
         href={link.href}
         target="_blank"
         rel="noopener noreferrer"
-        className={cls}
+        className={baseCls}
         onClick={onClick}
       >
         {link.label}
@@ -62,7 +79,6 @@ export function SiteHeader() {
           <span className="text-2xl font-bold tracking-tight text-foreground">The Patch</span>
         </Link>
 
-        {/* Desktop nav */}
         <nav aria-label="Primary" className="hidden md:block">
           <ul className="flex flex-wrap gap-6 text-sm font-medium">
             {navLinks.map((l) => (
@@ -71,7 +87,6 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        {/* Mobile toggle */}
         <button
           type="button"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -84,7 +99,6 @@ export function SiteHeader() {
         </button>
       </div>
 
-      {/* Mobile nav */}
       {open && (
         <nav
           id="mobile-nav"

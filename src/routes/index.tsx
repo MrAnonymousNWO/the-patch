@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { getPosts } from "@/lib/wordpress.functions";
+import { RssFeeds } from "@/components/RssFeeds";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -210,6 +211,8 @@ function Index() {
             </p>
           </div>
         </section>
+
+        <RssFeeds />
       </main>
     </div>
   );
