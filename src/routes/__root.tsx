@@ -88,9 +88,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/L59yRreleIWB6cGaqD1AoCtNPIl1/social-images/social-1778475133625-86439.webp" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
       {
-        rel: "stylesheet",
-        href: appCss,
+        rel: "alternate",
+        type: "application/rss+xml",
+        title: "The Patch — RSS Feed",
+        href: "/feed.xml",
       },
     ],
   }),

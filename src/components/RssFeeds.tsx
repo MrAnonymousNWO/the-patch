@@ -26,14 +26,15 @@ const FEED_SOURCES = [
   },
 ];
 
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+const DEFAULT_MAX_ITEMS = 30;
+const CACHE_TTL_MS = 10 * 60 * 1000;
 const STORAGE_KEY = "rss-feed-cache-v1";
 
 type CacheEntry = { items: FeedItem[]; ts: number };
 const memoryCache = new Map<string, CacheEntry>();
 const inflight = new Map<string, Promise<FeedItem[]>>();
 
-function readPersistedCache(): Record<string, CacheEntry> {
+function readPersisted(): Record<string, CacheEntry> {
   if (typeof window === "undefined") return {};
   try {
     const raw = window.sessionStorage.getItem(STORAGE_KEY);
@@ -43,19 +44,19 @@ function readPersistedCache(): Record<string, CacheEntry> {
   }
 }
 
-function writePersistedCache(data: Record<string, CacheEntry>) {
+function writePersisted(data: Record<string, CacheEntry>) {
   if (typeof window === "undefined") return;
   try {
     window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
-    /* ignore quota */
+    /* quota */
   }
 }
 
 function getCached(url: string): FeedItem[] | null {
   const mem = memoryCache.get(url);
   if (mem && Date.now() - mem.ts < CACHE_TTL_MS) return mem.items;
-  const persisted = readPersistedCache()[url];
+  const persisted = readPersisted()[url];
   if (persisted && Date.now() - persisted.ts < CACHE_TTL_MS) {
     memoryCache.set(url, persisted);
     return persisted.items;
@@ -66,9 +67,9 @@ function getCached(url: string): FeedItem[] | null {
 function setCached(url: string, items: FeedItem[]) {
   const entry = { items, ts: Date.now() };
   memoryCache.set(url, entry);
-  const persisted = readPersistedCache();
+  const persisted = readPersisted();
   persisted[url] = entry;
-  writePersistedCache(persisted);
+  writePersisted(persisted);
 }
 
 function stripHtml(html: string): string {
@@ -80,8 +81,7 @@ function parseFeed(xml: string): FeedItem[] {
   if (typeof window === "undefined") return [];
   const doc = new DOMParser().parseFromString(xml, "text/xml");
   if (doc.querySelector("parsererror")) return [];
-  const items = Array.from(doc.querySelectorAll("item, entry"));
-  return items.map((item) => {
+  return Array.from(doc.querySelectorAll("item, entry")).map((item) => {
     const title = item.querySelector("title")?.textContent?.trim() ?? "Untitled";
     const linkEl = item.querySelector("link");
     const link =
@@ -102,7 +102,7 @@ function parseFeed(xml: string): FeedItem[] {
   });
 }
 
-async function fetchFeed(url: string): Promise<FeedItem[]> {
+async function fetchFeed(url: string, signal: AbortSignal): Promise<FeedItem[]> {
   const cached = getCached(url);
   if (cached) return cached;
   const existing = inflight.get(url);
@@ -117,7 +117,7 @@ async function fetchFeed(url: string): Promise<FeedItem[]> {
     let lastErr: unknown;
     for (const make of proxies) {
       try {
-        const res = await fetch(make(url));
+        const res = await fetch(make(url), { signal });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const xml = await res.text();
         const items = parseFeed(xml);
@@ -127,6 +127,7 @@ async function fetchFeed(url: string): Promise<FeedItem[]> {
         }
         lastErr = new Error("Empty feed");
       } catch (e) {
+        if ((e as any)?.name === "AbortError") throw e;
         lastErr = e;
       }
     }
@@ -141,24 +142,30 @@ async function fetchFeed(url: string): Promise<FeedItem[]> {
   }
 }
 
-export function RssFeeds() {
+export function RssFeeds({ maxItems = DEFAULT_MAX_ITEMS }: { maxItems?: number } = {}) {
+  // SSR-safe: always start in loading state. Cache hydrates after mount.
   const [feeds, setFeeds] = useState<Feed[]>(() =>
-    FEED_SOURCES.map((f) => {
-      const cached = typeof window !== "undefined" ? getCached(f.url) : null;
-      return cached
-        ? { ...f, items: cached, status: "ready" as const }
-        : { ...f, items: [], status: "loading" as const };
-    }),
+    FEED_SOURCES.map((f) => ({ ...f, items: [], status: "loading" as const })),
   );
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
+    setHydrated(true);
+    const controller = new AbortController();
+
+    // Synchronously serve cached entries to avoid flicker
+    setFeeds((prev) =>
+      prev.map((feed) => {
+        const cached = getCached(feed.url);
+        return cached ? { ...feed, items: cached, status: "ready" } : feed;
+      }),
+    );
+
     FEED_SOURCES.forEach((source, idx) => {
-      const cached = getCached(source.url);
-      if (cached) return;
-      fetchFeed(source.url)
+      if (getCached(source.url)) return;
+      fetchFeed(source.url, controller.signal)
         .then((items) => {
-          if (cancelled) return;
+          if (controller.signal.aborted) return;
           setFeeds((prev) => {
             const next = [...prev];
             next[idx] = { ...source, items, status: "ready" };
@@ -166,22 +173,16 @@ export function RssFeeds() {
           });
         })
         .catch((e: Error) => {
-          if (cancelled) return;
+          if (controller.signal.aborted || e.name === "AbortError") return;
           setFeeds((prev) => {
             const next = [...prev];
-            next[idx] = {
-              ...source,
-              items: [],
-              status: "error",
-              error: e.message,
-            };
+            next[idx] = { ...source, items: [], status: "error", error: e.message };
             return next;
           });
         });
     });
-    return () => {
-      cancelled = true;
-    };
+
+    return () => controller.abort();
   }, []);
 
   return (
@@ -197,95 +198,99 @@ export function RssFeeds() {
       </p>
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {feeds.map((feed) => (
-          <div
-            key={feed.url}
-            className="rounded-lg border border-border bg-card p-6"
-          >
-            <div className="mb-4 flex items-baseline justify-between gap-3">
-              <h3 className="text-lg font-semibold text-foreground">{feed.title}</h3>
-              <a
-                href={feed.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs uppercase tracking-wider text-primary hover:underline"
-              >
-                RSS
-              </a>
-            </div>
-
-            {feed.status === "loading" && (
-              <ul className="space-y-5" aria-busy="true">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <li key={i} className="border-b border-border pb-4 last:border-0">
-                    <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
-                    <div className="mt-2 h-3 w-1/3 animate-pulse rounded bg-muted" />
-                    <div className="mt-3 h-3 w-full animate-pulse rounded bg-muted" />
-                    <div className="mt-1 h-3 w-5/6 animate-pulse rounded bg-muted" />
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {feed.status === "error" && (
-              <div className="rounded-md border border-border bg-secondary p-4 text-sm text-muted-foreground">
-                Could not load this feed right now. You can still
-                {" "}
+        {feeds.map((feed) => {
+          const visible = feed.items.slice(0, maxItems);
+          return (
+            <div key={feed.url} className="rounded-lg border border-border bg-card p-6">
+              <div className="mb-4 flex items-baseline justify-between gap-3">
+                <h3 className="text-lg font-semibold text-foreground">{feed.title}</h3>
                 <a
                   href={feed.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary underline"
+                  className="text-xs uppercase tracking-wider text-primary hover:underline"
                 >
-                  open it directly
+                  RSS
                 </a>
-                .
               </div>
-            )}
 
-            {feed.status === "ready" && (
-              <ul className="space-y-5">
-                {feed.items.map((item, i) => (
-                  <li
-                    key={`${feed.url}-${i}`}
-                    className="border-b border-border pb-4 last:border-0 last:pb-0"
+              {feed.status === "loading" && (
+                <ul className="space-y-5">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <li key={i} className="border-b border-border pb-4 last:border-0 last:pb-0">
+                      <div className="h-4 w-3/4 rounded bg-muted" />
+                      <div className="mt-2 h-3 w-1/3 rounded bg-muted" />
+                      <div className="mt-3 h-3 w-full rounded bg-muted" />
+                      <div className="mt-1 h-3 w-5/6 rounded bg-muted" />
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {feed.status === "error" && (
+                <div className="rounded-md border border-border bg-secondary p-4 text-sm text-muted-foreground">
+                  Could not load this feed right now.{" "}
+                  <a
+                    href={feed.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline"
                   >
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      <h4 className="text-base font-semibold text-foreground group-hover:text-primary">
-                        {item.title}
-                      </h4>
-                      {item.pubDate && (
-                        <time className="mt-1 block text-xs uppercase tracking-wider text-muted-foreground">
-                          {(() => {
-                            const d = new Date(item.pubDate!);
-                            return Number.isNaN(d.getTime())
-                              ? item.pubDate
-                              : d.toLocaleDateString("en-GB", {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                  timeZone: "UTC",
-                                });
-                          })()}
-                        </time>
-                      )}
-                      {item.snippet && (
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          {item.snippet}
-                        </p>
-                      )}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
+                    Open it directly
+                  </a>
+                  .
+                </div>
+              )}
+
+              {feed.status === "ready" && hydrated && (
+                <>
+                  <ul className="space-y-5">
+                    {visible.map((item, i) => (
+                      <li
+                        key={`${feed.url}-${i}`}
+                        className="border-b border-border pb-4 last:border-0 last:pb-0"
+                      >
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          <h4 className="text-base font-semibold text-foreground group-hover:text-primary">
+                            {item.title}
+                          </h4>
+                          {item.pubDate && (
+                            <time className="mt-1 block text-xs uppercase tracking-wider text-muted-foreground">
+                              {(() => {
+                                const d = new Date(item.pubDate!);
+                                return Number.isNaN(d.getTime())
+                                  ? item.pubDate
+                                  : d.toLocaleDateString("en-GB", {
+                                      year: "numeric",
+                                      month: "long",
+                                      day: "numeric",
+                                      timeZone: "UTC",
+                                    });
+                              })()}
+                            </time>
+                          )}
+                          {item.snippet && (
+                            <p className="mt-2 text-sm text-muted-foreground">{item.snippet}</p>
+                          )}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                  {feed.items.length > visible.length && (
+                    <p className="mt-4 text-xs text-muted-foreground">
+                      Showing {visible.length} of {feed.items.length} entries.
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );
