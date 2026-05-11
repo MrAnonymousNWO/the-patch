@@ -93,18 +93,21 @@ export const Route = createFileRoute("/blog/$slug")({
 function PostPage() {
   const { post } = Route.useLoaderData();
   return (
-    <article className="min-h-screen bg-background text-foreground">
+    <article className="text-foreground">
       <div className="mx-auto max-w-3xl px-6 py-12">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
+        <Link to="/" className="text-sm text-muted-foreground hover:text-primary">
           ← Back to all articles
         </Link>
         <h1 className="mt-6 text-3xl font-bold leading-tight md:text-4xl">{post.title}</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          {new Date(post.date).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+          <time dateTime={post.date}>
+            {new Date(post.date).toLocaleDateString("en-GB", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              timeZone: "UTC",
+            })}
+          </time>
           {post.author?.name ? ` · ${post.author.name}` : ""}
         </p>
         {post.featured_image && (
