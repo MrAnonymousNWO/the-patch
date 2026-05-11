@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { getPostBySlug } from "@/lib/wordpress.functions";
+import { RssFeeds } from "@/components/RssFeeds";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => getPostBySlug({ data: { slug: params.slug } }),
@@ -122,6 +123,7 @@ function PostPage() {
           className="prose prose-neutral mt-8 max-w-none text-foreground"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
+        <RssFeeds />
       </div>
     </article>
   );
