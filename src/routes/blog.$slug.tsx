@@ -21,6 +21,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { title: `${post.title} — The Patch` },
         { name: "description", content: description },
         { name: "keywords", content: keywords },
+        { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
         { property: "og:title", content: post.title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
