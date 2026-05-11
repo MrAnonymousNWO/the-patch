@@ -77,7 +77,7 @@ function Index() {
           </div>
 
           <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {posts.map((post) => (
+            {posts.map((post: any) => (
               <li
                 key={post.ID}
                 className="group overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-lg"
