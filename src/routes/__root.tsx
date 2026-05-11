@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { SiteHeader, SiteFooter } from "@/components/SiteHeader";
 
 function NotFoundComponent() {
   return (
@@ -72,6 +73,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "bL0Q0TMItHr_gRP_a2on4EXDhl5UO2VaOsbH0pSmEqU" },
       { title: "Global Patch" },
       { name: "description", content: "Patch for a Better World Without Nation-States, Ideologies, or Politicians. Prepare the world for people who take responsibility for themselves." },
       { name: "author", content: "Lovable" },
@@ -117,7 +119,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <div className="flex min-h-screen flex-col bg-background">
+        <SiteHeader />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <SiteFooter />
+      </div>
     </QueryClientProvider>
   );
 }
