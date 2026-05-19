@@ -11,8 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as PagesRouteImport } from './routes/pages'
 import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PagesSlugRouteImport } from './routes/pages.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -25,6 +27,11 @@ const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PagesRoute = PagesRouteImport.update({
+  id: '/pages',
+  path: '/pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FeedDotxmlRoute = FeedDotxmlRouteImport.update({
   id: '/feed.xml',
   path: '/feed.xml',
@@ -35,6 +42,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PagesSlugRoute = PagesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => PagesRoute,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
@@ -44,42 +56,65 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/feed.xml': typeof FeedDotxmlRoute
+  '/pages': typeof PagesRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/pages/$slug': typeof PagesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/feed.xml': typeof FeedDotxmlRoute
+  '/pages': typeof PagesRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/pages/$slug': typeof PagesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/feed.xml': typeof FeedDotxmlRoute
+  '/pages': typeof PagesRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/pages/$slug': typeof PagesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/feed.xml' | '/robots.txt' | '/sitemap.xml' | '/blog/$slug'
+  fullPaths:
+    | '/'
+    | '/feed.xml'
+    | '/pages'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/blog/$slug'
+    | '/pages/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/feed.xml' | '/robots.txt' | '/sitemap.xml' | '/blog/$slug'
+  to:
+    | '/'
+    | '/feed.xml'
+    | '/pages'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/blog/$slug'
+    | '/pages/$slug'
   id:
     | '__root__'
     | '/'
     | '/feed.xml'
+    | '/pages'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/blog/$slug'
+    | '/pages/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FeedDotxmlRoute: typeof FeedDotxmlRoute
+  PagesRoute: typeof PagesRouteWithChildren
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -101,6 +136,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pages': {
+      id: '/pages'
+      path: '/pages'
+      fullPath: '/pages'
+      preLoaderRoute: typeof PagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/feed.xml': {
       id: '/feed.xml'
       path: '/feed.xml'
@@ -115,6 +157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pages/$slug': {
+      id: '/pages/$slug'
+      path: '/$slug'
+      fullPath: '/pages/$slug'
+      preLoaderRoute: typeof PagesSlugRouteImport
+      parentRoute: typeof PagesRoute
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/blog/$slug'
@@ -125,9 +174,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface PagesRouteChildren {
+  PagesSlugRoute: typeof PagesSlugRoute
+}
+
+const PagesRouteChildren: PagesRouteChildren = {
+  PagesSlugRoute: PagesSlugRoute,
+}
+
+const PagesRouteWithChildren = PagesRoute._addFileChildren(PagesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FeedDotxmlRoute: FeedDotxmlRoute,
+  PagesRoute: PagesRouteWithChildren,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   BlogSlugRoute: BlogSlugRoute,
