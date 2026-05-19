@@ -87,8 +87,8 @@ function PageView() {
             <h2 className="text-lg font-semibold">More pages</h2>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
               {pages
-                .filter((p) => p.slug !== page.slug)
-                .map((p) => (
+                .filter((p: { slug: string }) => p.slug !== page.slug)
+                .map((p: { ID: number; slug: string; title: string }) => (
                   <li key={p.ID}>
                     <Link
                       to="/pages/$slug"

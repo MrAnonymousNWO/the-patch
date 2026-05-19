@@ -57,7 +57,7 @@ function PagesIndex() {
           <p className="text-muted-foreground">No pages available yet.</p>
         ) : (
           <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {pages.map((p) => (
+            {pages.map((p: { ID: number; slug: string; title: string; excerpt: string; featured_image: string }) => (
               <li key={p.ID}>
                 <Link
                   to="/pages/$slug"

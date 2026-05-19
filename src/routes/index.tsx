@@ -43,7 +43,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// Use a fixed locale + UTC to avoid SSR/CSR hydration mismatches.
 function formatDate(iso: string) {
   try {
     const d = new Date(iso);
@@ -63,57 +62,96 @@ function Index() {
 
   return (
     <div className="text-foreground">
-      <section className="border-b border-border bg-secondary">
-        <div className="mx-auto max-w-5xl px-6 py-12">
-          <h1 className="text-4xl font-bold tracking-tight md:text-5xl">The Patch</h1>
-          <p className="mt-3 max-w-2xl text-muted-foreground">
-            Now There's AI Support &amp; Patch — A World Without Power for Anyone.
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-border bg-[image:var(--gradient-hero)]">
+        <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-[image:var(--gradient-primary)] opacity-20 blur-3xl" />
+        <div className="absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
+        <div className="relative mx-auto max-w-6xl px-6 py-20 md:py-28">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium uppercase tracking-wider text-primary backdrop-blur">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+            Independent journalism · Live from WordPress
+          </span>
+          <h1 className="mt-6 max-w-3xl bg-gradient-to-br from-foreground via-foreground to-primary bg-clip-text text-4xl font-bold leading-[1.05] tracking-tight text-transparent md:text-6xl lg:text-7xl">
+            The Patch — A World Without Power for Anyone.
+          </h1>
+          <p className="mt-5 max-w-2xl text-base text-muted-foreground md:text-lg">
+            Now there's AI Support &amp; Patch. Primary-source reporting on the Juridical
+            Singularity, the World Succession Deed 1400/98, NATO infrastructure and the future
+            of post-national legal order.
           </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              to="/"
+              hash="latest-posts"
+              className="inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-primary)] px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)] active:translate-y-0"
+            >
+              Read latest articles →
+            </Link>
+            <Link
+              to="/pages"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-6 py-3 text-sm font-semibold text-foreground backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary active:translate-y-0"
+            >
+              Browse pages
+            </Link>
+          </div>
         </div>
       </section>
 
-      <main className="mx-auto max-w-5xl px-6 py-12">
-        <section aria-labelledby="latest-posts">
-          <div className="mb-6 flex items-baseline justify-between">
-            <h2 id="latest-posts" className="text-2xl font-semibold tracking-tight">
-              Latest articles
-            </h2>
-            <span className="text-sm text-muted-foreground">{found} posts total</span>
+      <main className="mx-auto max-w-6xl px-6 py-16">
+        <section aria-labelledby="latest-posts" className="scroll-mt-24">
+          <div className="mb-8 flex items-end justify-between gap-4">
+            <div>
+              <h2
+                id="latest-posts"
+                className="text-3xl font-bold tracking-tight md:text-4xl"
+              >
+                Latest articles
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {found} posts total · Page {page} of {totalPages}
+              </p>
+            </div>
           </div>
 
           <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post: any) => (
-              <li
-                key={post.ID}
-                className="group overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-lg"
-              >
+              <li key={post.ID} className="group">
                 <Link
                   to="/blog/$slug"
                   params={{ slug: post.slug }}
-                  className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/80 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-[var(--shadow-glow)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring active:translate-y-0"
                 >
-                  {post.featured_image ? (
-                    <img
-                      src={post.featured_image}
-                      alt={post.title}
-                      className="h-48 w-full object-cover"
-                    />
-                  ) : (
-                    <div className="h-48 w-full bg-accent" />
-                  )}
-                  <div className="p-5">
+                  <div className="relative overflow-hidden">
+                    {post.featured_image ? (
+                      <img
+                        src={post.featured_image}
+                        alt={post.title}
+                        className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="h-52 w-full bg-[image:var(--gradient-primary)] opacity-90" />
+                    )}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                  </div>
+                  <div className="flex flex-1 flex-col p-5">
                     <time
                       dateTime={post.date}
                       className="text-xs uppercase tracking-wider text-muted-foreground"
                     >
                       {formatDate(post.date)}
                     </time>
-                    <h3 className="mt-2 text-lg font-semibold leading-snug text-foreground group-hover:text-primary">
+                    <h3 className="mt-2 text-lg font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
                       {post.title}
                     </h3>
                     {post.excerpt && (
-                      <p className="mt-2 text-sm text-muted-foreground">{post.excerpt}</p>
+                      <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
+                        {post.excerpt}
+                      </p>
                     )}
+                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                      Read article
+                      <span className="transition-transform group-hover:translate-x-1">→</span>
+                    </span>
                   </div>
                 </Link>
               </li>
@@ -123,7 +161,7 @@ function Index() {
           {/* Pagination */}
           <nav
             aria-label="Blog pagination"
-            className="mt-10 flex flex-wrap items-center justify-between gap-4"
+            className="mt-12 flex flex-wrap items-center justify-between gap-4"
           >
             <div className="text-sm text-muted-foreground">
               Page {page} of {totalPages}
@@ -133,7 +171,7 @@ function Index() {
                 <Link
                   to="/"
                   search={{ page: page - 1 }}
-                  className="rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-accent"
+                  className="rounded-full border border-border bg-card/70 px-4 py-2 text-sm font-medium text-foreground backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary active:translate-y-0"
                 >
                   ← Previous
                 </Link>
@@ -145,8 +183,8 @@ function Index() {
                   search={{ page: n }}
                   className={
                     n === page
-                      ? "rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-                      : "rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-accent"
+                      ? "rounded-full bg-[image:var(--gradient-primary)] px-4 py-2 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)]"
+                      : "rounded-full border border-border bg-card/70 px-4 py-2 text-sm font-medium text-foreground backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary active:translate-y-0"
                   }
                   aria-current={n === page ? "page" : undefined}
                 >
@@ -157,7 +195,7 @@ function Index() {
                 <Link
                   to="/"
                   search={{ page: page + 1 }}
-                  className="rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-accent"
+                  className="rounded-full border border-border bg-card/70 px-4 py-2 text-sm font-medium text-foreground backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary active:translate-y-0"
                 >
                   Next →
                 </Link>
@@ -166,12 +204,12 @@ function Index() {
           </nav>
         </section>
 
-        {/* Long-form text — always BELOW the post list, also on mobile */}
+        {/* About */}
         <section
           aria-labelledby="about-the-patch"
-          className="mt-16 border-t border-border pt-12"
+          className="mt-20 scroll-mt-24 rounded-3xl border border-border bg-card/70 p-8 backdrop-blur md:p-12"
         >
-          <h2 id="about-the-patch" className="text-2xl font-semibold tracking-tight">
+          <h2 id="about-the-patch" className="text-3xl font-bold tracking-tight md:text-4xl">
             About The Patch
           </h2>
 
@@ -212,7 +250,9 @@ function Index() {
           </div>
         </section>
 
-        <RssFeeds />
+        <div className="mt-16">
+          <RssFeeds />
+        </div>
       </main>
     </div>
   );
