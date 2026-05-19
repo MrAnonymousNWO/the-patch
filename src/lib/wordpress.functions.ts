@@ -18,6 +18,17 @@ export interface WPPost {
   categories: Record<string, { name: string; slug: string }>;
 }
 
+export interface WPPage {
+  ID: number;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  date: string;
+  modified: string;
+  featured_image: string;
+}
+
 async function wpFetch(path: string): Promise<any> {
   const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
   if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -102,3 +113,39 @@ export const getAllPostsForSitemap = createServerFn({ method: "GET" }).handler(a
     })),
   };
 });
+
+export const getPages = createServerFn({ method: "GET" }).handler(async () => {
+  const data = await wpFetch(
+    `/rest/v1.1/sites/${SITE}/posts/?type=page&number=100&fields=ID,slug,title,excerpt,date,modified,featured_image`,
+  );
+  const pages: WPPage[] = (data.posts || []).map((p: any) => ({
+    ID: p.ID,
+    slug: p.slug,
+    title: stripHtml(p.title),
+    excerpt: stripHtml(p.excerpt).slice(0, 220),
+    content: "",
+    date: p.date,
+    modified: p.modified,
+    featured_image: p.featured_image || "",
+  }));
+  return { pages };
+});
+
+export const getPageBySlug = createServerFn({ method: "GET" })
+  .inputValidator((data: { slug: string }) => data)
+  .handler(async ({ data }) => {
+    const p = await wpFetch(
+      `/rest/v1.1/sites/${SITE}/posts/slug:${encodeURIComponent(data.slug)}?type=page`,
+    );
+    const page: WPPage = {
+      ID: p.ID,
+      slug: p.slug,
+      title: stripHtml(p.title),
+      excerpt: stripHtml(p.excerpt).slice(0, 220),
+      content: p.content || "",
+      date: p.date,
+      modified: p.modified,
+      featured_image: p.featured_image || "",
+    };
+    return { page };
+  });
