@@ -18,13 +18,20 @@ export const Route = createFileRoute("/pages/$slug")({
       meta: [
         { title: `${page.title} — The Patch` },
         { name: "description", content: description },
-        { name: "robots", content: "index, follow, max-image-preview:large" },
+        { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
         { property: "og:title", content: page.title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
         { property: "og:url", content: url },
+        { property: "og:site_name", content: "The Patch" },
+        { name: "twitter:card", content: page.featured_image ? "summary_large_image" : "summary" },
+        { name: "twitter:title", content: page.title },
+        { name: "twitter:description", content: description },
         ...(page.featured_image
-          ? [{ property: "og:image", content: page.featured_image }]
+          ? [
+              { property: "og:image", content: page.featured_image },
+              { name: "twitter:image", content: page.featured_image },
+            ]
           : []),
       ],
       links: [{ rel: "canonical", href: url }],
