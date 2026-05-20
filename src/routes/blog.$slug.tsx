@@ -39,7 +39,15 @@ export const Route = createFileRoute("/blog/$slug")({
         { name: "twitter:title", content: post.title },
         { name: "twitter:description", content: description },
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: "The Patch — RSS Feed",
+          href: "/feed.xml",
+        },
+      ],
       scripts: [
         {
           type: "application/ld+json",
