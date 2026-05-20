@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { getPosts } from "@/lib/wordpress.functions";
 import { RssFeeds } from "@/components/RssFeeds";
+import { SocialEmbeds } from "@/components/SocialEmbeds";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search: Record<string, unknown>) => ({
