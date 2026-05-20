@@ -225,30 +225,43 @@ export function RssFeeds({ maxItems = DEFAULT_MAX_ITEMS }: { maxItems?: number }
               </div>
 
               {feed.status === "loading" && (
-                <ul className="space-y-5">
-                  {Array.from({ length: 4 }).map((_, i) => (
+                <ul className="space-y-5" aria-label="Loading feed entries">
+                  {Array.from({ length: 5 }).map((_, i) => (
                     <li key={i} className="border-b border-border pb-4 last:border-0 last:pb-0">
-                      <div className="h-4 w-3/4 rounded bg-muted" />
-                      <div className="mt-2 h-3 w-1/3 rounded bg-muted" />
-                      <div className="mt-3 h-3 w-full rounded bg-muted" />
-                      <div className="mt-1 h-3 w-5/6 rounded bg-muted" />
+                      <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+                      <div className="mt-2 h-3 w-1/3 animate-pulse rounded bg-muted" />
+                      <div className="mt-3 h-3 w-full animate-pulse rounded bg-muted" />
+                      <div className="mt-1 h-3 w-5/6 animate-pulse rounded bg-muted" />
                     </li>
                   ))}
                 </ul>
               )}
 
               {feed.status === "error" && (
-                <div className="rounded-md border border-border bg-secondary p-4 text-sm text-muted-foreground">
-                  Could not load this feed right now.{" "}
-                  <a
-                    href={feed.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary underline"
-                  >
-                    Open it directly
-                  </a>
-                  .
+                <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 text-sm">
+                  <div className="flex items-start gap-3">
+                    <span
+                      aria-hidden
+                      className="mt-0.5 inline-flex h-8 w-8 flex-none items-center justify-center rounded-full bg-destructive/15 text-destructive"
+                    >
+                      !
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-medium text-foreground">Feed temporarily unavailable</p>
+                      <p className="mt-1 text-muted-foreground">
+                        We couldn't reach this source right now.{" "}
+                        <a
+                          href={feed.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary underline underline-offset-2 hover:opacity-80"
+                        >
+                          Open it directly in a new window
+                        </a>
+                        .
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
 
