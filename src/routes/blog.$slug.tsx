@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { getPostBySlug } from "@/lib/wordpress.functions";
 import { RssFeeds } from "@/components/RssFeeds";
+import { SocialEmbeds } from "@/components/SocialEmbeds";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => getPostBySlug({ data: { slug: params.slug } }),
