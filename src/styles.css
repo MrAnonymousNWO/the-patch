@@ -154,16 +154,40 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
     background-image: radial-gradient(
         60% 40% at 10% 0%,
-        color-mix(in oklab, var(--primary-glow) 18%, transparent) 0%,
+        color-mix(in oklab, var(--primary-glow) 22%, transparent) 0%,
         transparent 60%
       ),
       radial-gradient(
         50% 40% at 100% 20%,
-        color-mix(in oklab, var(--primary) 12%, transparent) 0%,
+        color-mix(in oklab, var(--primary) 14%, transparent) 0%,
         transparent 65%
       );
     background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .font-serif {
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
+  }
+
+  /* Ensure long words / URLs wrap on mobile inside post content */
+  .prose {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .prose img,
+  .prose iframe,
+  .prose video,
+  .prose pre,
+  .prose table {
+    max-width: 100%;
+    height: auto;
+  }
+  .prose pre {
+    overflow-x: auto;
   }
 }
