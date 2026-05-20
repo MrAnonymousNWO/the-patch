@@ -50,46 +50,50 @@
 
 :root {
   --radius: 0.75rem;
-  /* Light blue palette — modernized */
-  --background: oklch(0.985 0.015 235);
+  /* WordPress.com–inspired light blue palette */
+  --background: oklch(0.975 0.022 235);
   --foreground: oklch(0.22 0.06 250);
-  --card: oklch(1 0 0);
+  --card: oklch(0.995 0.008 235);
   --card-foreground: oklch(0.22 0.06 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.06 250);
-  --primary: oklch(0.62 0.14 240);
-  --primary-glow: oklch(0.78 0.12 225);
+  --primary: oklch(0.58 0.15 245);
+  --primary-glow: oklch(0.82 0.1 225);
   --primary-foreground: oklch(0.99 0.01 235);
-  --secondary: oklch(0.94 0.04 235);
+  --secondary: oklch(0.93 0.045 235);
   --secondary-foreground: oklch(0.3 0.08 250);
-  --muted: oklch(0.95 0.025 235);
+  --muted: oklch(0.94 0.03 235);
   --muted-foreground: oklch(0.45 0.05 245);
-  --accent: oklch(0.9 0.06 235);
+  --accent: oklch(0.88 0.07 235);
   --accent-foreground: oklch(0.25 0.08 250);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.88 0.04 235);
-  --input: oklch(0.88 0.04 235);
-  --ring: oklch(0.62 0.14 240);
+  --border: oklch(0.86 0.045 235);
+  --input: oklch(0.86 0.045 235);
+  --ring: oklch(0.58 0.15 245);
   --chart-1: oklch(0.62 0.14 240);
   --chart-2: oklch(0.7 0.12 220);
   --chart-3: oklch(0.55 0.16 250);
   --chart-4: oklch(0.78 0.1 215);
   --chart-5: oklch(0.5 0.18 245);
-  --sidebar: oklch(0.97 0.025 235);
+  --sidebar: oklch(0.96 0.03 235);
   --sidebar-foreground: oklch(0.22 0.06 250);
-  --sidebar-primary: oklch(0.62 0.14 240);
+  --sidebar-primary: oklch(0.58 0.15 245);
   --sidebar-primary-foreground: oklch(0.99 0.01 235);
-  --sidebar-accent: oklch(0.9 0.06 235);
+  --sidebar-accent: oklch(0.88 0.07 235);
   --sidebar-accent-foreground: oklch(0.25 0.08 250);
-  --sidebar-border: oklch(0.88 0.04 235);
-  --sidebar-ring: oklch(0.62 0.14 240);
+  --sidebar-border: oklch(0.86 0.045 235);
+  --sidebar-ring: oklch(0.58 0.15 245);
+
+  /* Typography (WordPress.com–style) */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
 
   /* Gradients & shadows */
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
   --gradient-hero: radial-gradient(
       120% 80% at 10% 0%,
-      color-mix(in oklab, var(--primary-glow) 35%, transparent) 0%,
+      color-mix(in oklab, var(--primary-glow) 40%, transparent) 0%,
       transparent 60%
     ),
     radial-gradient(
