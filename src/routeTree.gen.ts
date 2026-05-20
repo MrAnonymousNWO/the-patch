@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SitemapIndexDotxmlRouteImport } from './routes/sitemap-index[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as PagesRouteImport } from './routes/pages'
 import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
@@ -20,6 +21,11 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapIndexDotxmlRoute = SitemapIndexDotxmlRouteImport.update({
+  id: '/sitemap-index.xml',
+  path: '/sitemap-index.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/feed.xml': typeof FeedDotxmlRoute
   '/pages': typeof PagesRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/feed.xml': typeof FeedDotxmlRoute
   '/pages': typeof PagesRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/feed.xml': typeof FeedDotxmlRoute
   '/pages': typeof PagesRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/feed.xml'
     | '/pages'
     | '/robots.txt'
+    | '/sitemap-index.xml'
     | '/sitemap.xml'
     | '/blog/$slug'
     | '/pages/$slug'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/feed.xml'
     | '/pages'
     | '/robots.txt'
+    | '/sitemap-index.xml'
     | '/sitemap.xml'
     | '/blog/$slug'
     | '/pages/$slug'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/feed.xml'
     | '/pages'
     | '/robots.txt'
+    | '/sitemap-index.xml'
     | '/sitemap.xml'
     | '/blog/$slug'
     | '/pages/$slug'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   FeedDotxmlRoute: typeof FeedDotxmlRoute
   PagesRoute: typeof PagesRouteWithChildren
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapIndexDotxmlRoute: typeof SitemapIndexDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   BlogSlugRoute: typeof BlogSlugRoute
 }
@@ -127,6 +140,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-index.xml': {
+      id: '/sitemap-index.xml'
+      path: '/sitemap-index.xml'
+      fullPath: '/sitemap-index.xml'
+      preLoaderRoute: typeof SitemapIndexDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robots.txt': {
@@ -189,9 +209,20 @@ const rootRouteChildren: RootRouteChildren = {
   FeedDotxmlRoute: FeedDotxmlRoute,
   PagesRoute: PagesRouteWithChildren,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapIndexDotxmlRoute: SitemapIndexDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   BlogSlugRoute: BlogSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
