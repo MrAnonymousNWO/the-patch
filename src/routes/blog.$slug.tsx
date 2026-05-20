@@ -122,16 +122,16 @@ function PostPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-3xl px-6 py-12">
+      <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 md:py-12">
         {post.featured_image && (
           <img
             src={post.featured_image}
             alt={post.title}
-            className="mb-10 w-full rounded-2xl object-cover shadow-[var(--shadow-elegant)]"
+            className="mb-8 w-full rounded-2xl object-cover shadow-[var(--shadow-elegant)] md:mb-10"
           />
         )}
         <div
-          className="prose prose-neutral max-w-none text-foreground prose-headings:tracking-tight prose-a:text-primary prose-a:underline-offset-4 hover:prose-a:opacity-80 prose-img:rounded-xl"
+          className="prose prose-neutral block w-full max-w-none text-foreground prose-headings:tracking-tight prose-a:text-primary prose-a:underline-offset-4 hover:prose-a:opacity-80 prose-img:rounded-xl"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
         <RssFeeds />
