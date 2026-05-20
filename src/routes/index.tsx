@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { getPosts } from "@/lib/wordpress.functions";
 import { RssFeeds } from "@/components/RssFeeds";
+import { SocialEmbeds } from "@/components/SocialEmbeds";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -34,10 +35,18 @@ export const Route = createFileRoute("/")({
             "Independent journalism on the Juridical Singularity, the World Succession Deed 1400/98 and a world without power for anyone.",
         },
         { property: "og:type", content: "website" },
-        { property: "og:url", content: "https://patch98.wordpress.com" },
+        { property: "og:url", content: "https://the-patch.lovable.app/" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
-      links: [{ rel: "canonical", href: "https://patch98.wordpress.com" }],
+      links: [
+        { rel: "canonical", href: "https://the-patch.lovable.app/" },
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: "The Patch — RSS Feed",
+          href: "/feed.xml",
+        },
+      ],
     };
   },
   component: Index,
@@ -253,6 +262,7 @@ function Index() {
         <div className="mt-16">
           <RssFeeds />
         </div>
+        <SocialEmbeds />
       </main>
     </div>
   );

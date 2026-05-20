@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { getPostBySlug } from "@/lib/wordpress.functions";
 import { RssFeeds } from "@/components/RssFeeds";
+import { SocialEmbeds } from "@/components/SocialEmbeds";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => getPostBySlug({ data: { slug: params.slug } }),
@@ -39,7 +40,15 @@ export const Route = createFileRoute("/blog/$slug")({
         { name: "twitter:title", content: post.title },
         { name: "twitter:description", content: description },
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: "The Patch — RSS Feed",
+          href: "/feed.xml",
+        },
+      ],
       scripts: [
         {
           type: "application/ld+json",
@@ -134,6 +143,7 @@ function PostPage() {
           className="prose prose-neutral block w-full max-w-none text-foreground prose-headings:tracking-tight prose-a:text-primary prose-a:underline-offset-4 hover:prose-a:opacity-80 prose-img:rounded-xl"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
+        <SocialEmbeds />
         <RssFeeds />
       </div>
     </article>

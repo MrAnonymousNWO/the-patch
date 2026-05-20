@@ -8,6 +8,7 @@ export const Route = createFileRoute("/robots.txt")({
         const body = `User-agent: *
 Allow: /
 
+Sitemap: ${origin}/sitemap-index.xml
 Sitemap: ${origin}/sitemap.xml
 `;
         return new Response(body, {

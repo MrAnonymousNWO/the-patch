@@ -34,7 +34,15 @@ export const Route = createFileRoute("/pages/$slug")({
             ]
           : []),
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: "The Patch — RSS Feed",
+          href: "/feed.xml",
+        },
+      ],
     };
   },
   errorComponent: ({ error, reset }) => {
