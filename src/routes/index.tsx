@@ -263,7 +263,6 @@ function Index() {
           <RssFeeds />
         </div>
         <SocialEmbeds />
-        </div>
       </main>
     </div>
   );
