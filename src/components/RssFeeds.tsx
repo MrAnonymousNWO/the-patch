@@ -81,7 +81,7 @@ function parseFeed(xml: string): FeedItem[] {
   if (typeof window === "undefined") return [];
   const doc = new DOMParser().parseFromString(xml, "text/xml");
   if (doc.querySelector("parsererror")) return [];
-  return Array.from(doc.querySelectorAll("item, entry")).map((item) => {
+  const items = Array.from(doc.querySelectorAll("item, entry")).map((item) => {
     const title = item.querySelector("title")?.textContent?.trim() ?? "Untitled";
     const linkEl = item.querySelector("link");
     const link =
@@ -97,8 +97,18 @@ function parseFeed(xml: string): FeedItem[] {
     const pubDate =
       item.querySelector("pubDate")?.textContent ??
       item.querySelector("updated")?.textContent ??
+      item.querySelector("published")?.textContent ??
       undefined;
     return { title, link, snippet: stripHtml(desc), pubDate };
+  });
+  // Sort newest first by parseable date; entries without date keep relative order at the end.
+  return items.sort((a, b) => {
+    const ta = a.pubDate ? Date.parse(a.pubDate) : NaN;
+    const tb = b.pubDate ? Date.parse(b.pubDate) : NaN;
+    if (Number.isNaN(ta) && Number.isNaN(tb)) return 0;
+    if (Number.isNaN(ta)) return 1;
+    if (Number.isNaN(tb)) return -1;
+    return tb - ta;
   });
 }
 
