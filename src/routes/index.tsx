@@ -262,6 +262,8 @@ function Index() {
         <div className="mt-16">
           <RssFeeds />
         </div>
+        <SocialEmbeds />
+        </div>
       </main>
     </div>
   );
