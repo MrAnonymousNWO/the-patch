@@ -16,7 +16,7 @@ export const Route = createFileRoute("/blog/$slug")({
     ]
       .filter(Boolean)
       .join(", ");
-    const url = `https://patch98.wordpress.com/blog/${params.slug}`;
+    const url = `https://the-patch.lovable.app/blog/${params.slug}`;
     return {
       meta: [
         { title: `${post.title} — The Patch` },
