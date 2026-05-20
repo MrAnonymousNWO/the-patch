@@ -143,6 +143,7 @@ function PostPage() {
           className="prose prose-neutral block w-full max-w-none text-foreground prose-headings:tracking-tight prose-a:text-primary prose-a:underline-offset-4 hover:prose-a:opacity-80 prose-img:rounded-xl"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
+        <SocialEmbeds />
         <RssFeeds />
       </div>
     </article>
