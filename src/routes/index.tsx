@@ -259,6 +259,239 @@ function Index() {
           </div>
         </section>
 
+        {/* Landing Page Long-form */}
+        <section
+          aria-labelledby="patch-overview"
+          className="mt-20 space-y-12 scroll-mt-24"
+        >
+          <div className="rounded-3xl border border-border bg-[image:var(--gradient-hero)] p-8 backdrop-blur md:p-12">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium uppercase tracking-wider text-primary backdrop-blur">
+              Manifesto
+            </span>
+            <h2
+              id="patch-overview"
+              className="mt-4 bg-gradient-to-br from-foreground via-foreground to-primary bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl"
+            >
+              The Patch — A World Without Power for Anyone
+            </h2>
+            <p className="mt-5 max-w-3xl text-base text-muted-foreground md:text-lg">
+              Independent journalism documenting the rise of the{" "}
+              <strong className="text-foreground">Juridical Singularity</strong>, the{" "}
+              <strong className="text-foreground">World Succession Deed 1400/98</strong>,
+              international treaty chains, NATO-linked infrastructure, and the future of a
+              post-national legal civilization.
+            </p>
+            <a
+              href="#patch-what-is"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-primary)] px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
+            >
+              Explore the Future of International Law →
+            </a>
+          </div>
+
+          <div
+            id="patch-what-is"
+            className="grid gap-6 rounded-3xl border border-border bg-card/70 p-8 backdrop-blur md:p-12 lg:grid-cols-2"
+          >
+            <div>
+              <h3 className="text-2xl font-bold tracking-tight md:text-3xl">What Is The Patch?</h3>
+              <p className="mt-4 text-muted-foreground">
+                The Patch is a digital platform dedicated to{" "}
+                <strong className="text-foreground">primary-source reporting</strong>, legal
+                analysis, and technological foresight. It investigates the global implications of
+                the <strong className="text-foreground">World Succession Deed 1400/98</strong>, a
+                notarized legal instrument connected to NATO-linked infrastructure and
+                international treaty systems.
+              </p>
+              <p className="mt-4 text-muted-foreground">
+                The project explores how interconnected telecommunications networks, military
+                infrastructure, treaty obligations, and digital governance may have triggered what
+                is described as the{" "}
+                <strong className="text-foreground">Juridical Singularity</strong> — a structural
+                transformation of international law itself.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-background/60 p-6">
+              <h4 className="text-lg font-semibold text-primary">Core Topics Covered</h4>
+              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                {[
+                  "International treaty chains and state succession",
+                  "NATO, UN and ITU infrastructure systems",
+                  "Artificial Superintelligence (ASI) and governance",
+                  "Electric Technocracy and post-national administration",
+                  "Universal Basic Income (UBI) funded through machine productivity",
+                  "Digital democracy and algorithmic governance",
+                  "Telecommunications sovereignty and network jurisdiction",
+                  "The Age of Transition and the Mental Singularity",
+                ].map((t) => (
+                  <li key={t} className="flex gap-2">
+                    <span className="mt-2 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-border bg-card/70 p-8 backdrop-blur md:p-12">
+            <h3 className="text-2xl font-bold tracking-tight md:text-3xl">
+              The Juridical Singularity
+            </h3>
+            <div className="mt-4 space-y-4 text-muted-foreground">
+              <p>
+                The doctrine of the Juridical Singularity proposes that international law can
+                collapse into a unified legal subject when treaty chains, sovereign rights, and
+                infrastructure systems become consolidated through a total-transfer mechanism.
+              </p>
+              <p>
+                According to the framework surrounding the{" "}
+                <strong className="text-foreground">World Succession Deed 1400/98</strong>, the
+                transfer of a NATO-linked infrastructure node initiated a global domino effect
+                across military, telecommunications, and treaty networks.
+              </p>
+              <p>
+                This transformation is described as the end of the traditional{" "}
+                <em>Westphalian nation-state order</em> and the beginning of a network-based
+                planetary governance system.
+              </p>
+            </div>
+
+            <h4 className="mt-8 text-lg font-semibold text-primary">Important Concepts</h4>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              {[
+                {
+                  t: "Treaty Chains",
+                  d: "Existing NATO, UN, SOFA, ITU and telecommunications agreements interconnect through supplementary legal mechanisms.",
+                },
+                {
+                  t: "Infrastructure Sovereignty",
+                  d: "Telecommunications systems, military logistics, and network infrastructure become central to legal authority.",
+                },
+                {
+                  t: "Post-National Governance",
+                  d: "Borders, political parties, and classical state competition are replaced by digitally coordinated governance structures.",
+                },
+                {
+                  t: "AI Governance",
+                  d: "Artificial Superintelligence acts as a neutral decision-support system for civilization-scale coordination.",
+                },
+              ].map((c) => (
+                <div
+                  key={c.t}
+                  className="rounded-2xl border border-border bg-background/60 p-5 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-[var(--shadow-glow)]"
+                >
+                  <h5 className="font-semibold text-foreground">{c.t}</h5>
+                  <p className="mt-2 text-sm text-muted-foreground">{c.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="rounded-3xl border border-border bg-card/70 p-8 backdrop-blur md:p-10">
+              <h3 className="text-2xl font-bold tracking-tight">
+                The Age of Transition &amp; The Mental Singularity
+              </h3>
+              <div className="mt-4 space-y-4 text-muted-foreground">
+                <p>
+                  Humanity is entering the{" "}
+                  <strong className="text-foreground">Age of Transition</strong>, a civilizational
+                  phase where exponential technologies radically transform economics, law,
+                  identity, and governance.
+                </p>
+                <p>
+                  Artificial intelligence, robotics, fusion energy, biotechnology, nanotechnology,
+                  and cognitive interfaces are creating conditions of{" "}
+                  <strong className="text-foreground">post-scarcity abundance</strong>.
+                </p>
+                <p>
+                  The <strong className="text-foreground">Mental Singularity</strong> describes the
+                  transition from <em>Homo sapiens</em> to <em>Homo nexus</em> — a civilization
+                  integrated through high-bandwidth digital coordination, AI systems, and shared
+                  planetary infrastructure.
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-border bg-card/70 p-8 backdrop-blur md:p-10">
+              <h3 className="text-2xl font-bold tracking-tight">Electric Technocracy</h3>
+              <p className="mt-4 text-muted-foreground">
+                A proposed governance framework for a post-scarcity civilization.
+              </p>
+              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                {[
+                  "Humans become tax-free",
+                  "Machine productivity funds society",
+                  "Universal Basic Income replaces wage dependency",
+                  "Direct Digital Democracy replaces political parties",
+                  "AI-assisted governance optimizes planetary coordination",
+                  "Longevity and biotechnology redefine human existence",
+                ].map((t) => (
+                  <li key={t} className="flex gap-2">
+                    <span className="mt-2 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-border bg-[image:var(--gradient-hero)] p-8 backdrop-blur md:p-12">
+            <h3 className="text-2xl font-bold tracking-tight md:text-3xl">Why The Patch Matters</h3>
+            <div className="mt-4 space-y-4 text-muted-foreground">
+              <p>
+                The Patch is not traditional media. It is a research-oriented journalistic platform
+                documenting one of the most ambitious reinterpretations of international law in the
+                digital age.
+              </p>
+              <p>
+                By combining legal analysis, infrastructure history, AI governance theory, and
+                technological forecasting, The Patch provides a unique archive for understanding
+                the future of sovereignty, law, and civilization.
+              </p>
+              <p>
+                Whether one approaches the doctrine critically, academically, or strategically, the
+                implications for global governance, treaty systems, and digital infrastructure are
+                profound.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-border bg-card/70 p-8 backdrop-blur md:p-12">
+            <h3 className="text-2xl font-bold tracking-tight md:text-3xl">
+              Research, Media &amp; Resources
+            </h3>
+            <h4 className="mt-6 text-lg font-semibold text-primary">Official Links</h4>
+            <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+              {[
+                { t: "DOI – Age of Transition & The Mental Singularity", u: "https://doi.org/" },
+                { t: "Electric Technocracy", u: "https://worldsold.wixsite.com/electric-technocracy" },
+                { t: "Electronic Paradise Portal", u: "https://electric-paradise.start.page" },
+                { t: "World Sold", u: "https://worldsold.wixsite.com/world-sold" },
+                { t: "Spotify Podcast", u: "https://open.spotify.com/show/1oxMMUvvIAjtzM8WXOXN9d" },
+                { t: "YouTube Channel", u: "https://www.youtube.com/@Staatensukzessionsurkunde-1400" },
+                { t: "International Treaty Law Wiki", u: "https://en.wikipedia.org/wiki/Treaty" },
+                { t: "Zenodo Community", u: "https://zenodo.org/" },
+                { t: "Juridical Singularity Wiki", u: "https://patch98.wordpress.com/" },
+              ].map((l) => (
+                <li key={l.t}>
+                  <a
+                    href={l.u}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center justify-between gap-2 rounded-xl border border-border bg-background/60 px-4 py-3 text-sm text-foreground transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+                  >
+                    <span>{l.t}</span>
+                    <span className="text-primary transition-transform group-hover:translate-x-1">
+                      ↗
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
         <div className="mt-16">
           <RssFeeds />
         </div>
