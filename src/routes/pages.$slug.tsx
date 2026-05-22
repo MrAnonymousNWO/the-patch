@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { getPageBySlug, getPages } from "@/lib/wordpress.functions";
+import { SocialEmbeds } from "@/components/SocialEmbeds";
+import { RssFeeds } from "@/components/RssFeeds";
 
 export const Route = createFileRoute("/pages/$slug")({
   loader: async ({ params }) => {
@@ -96,6 +98,11 @@ function PageView() {
           className="prose prose-neutral mt-8 max-w-none text-foreground"
           dangerouslySetInnerHTML={{ __html: page.content }}
         />
+
+        <SocialEmbeds />
+        <RssFeeds />
+
+
 
         {pages.length > 1 && (
           <nav className="mt-16 border-t border-border pt-8" aria-label="Other pages">
