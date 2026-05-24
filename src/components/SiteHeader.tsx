@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import patchLogo from "@/assets/patch-logo.png";
 
 type NavLink =
   | { type: "internal"; to: "/" | "/pages"; label: string; exact?: boolean }
@@ -12,6 +13,7 @@ const navLinks: NavLink[] = [
   { type: "hash", to: "/", hash: "latest-posts", label: "Articles" },
   { type: "internal", to: "/pages", label: "Pages" },
   { type: "hash", to: "/", hash: "about-the-patch", label: "About" },
+  { type: "external", href: "https://wiki.technocracy.tech/", label: "Treaty Law Wiki" },
   { type: "external", href: "https://patch98.wordpress.com/", label: "Patch98" },
   { type: "external", href: "https://electric-paradise.start.page", label: "Electric Paradise" },
   { type: "external", href: "https://singularity41.wordpress.com/", label: "Singularity University" },
