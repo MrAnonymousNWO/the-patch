@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import patchLogo from "@/assets/patch-logo.png";
 
 type NavLink =
   | { type: "internal"; to: "/" | "/pages"; label: string; exact?: boolean }
@@ -12,6 +13,7 @@ const navLinks: NavLink[] = [
   { type: "hash", to: "/", hash: "latest-posts", label: "Articles" },
   { type: "internal", to: "/pages", label: "Pages" },
   { type: "hash", to: "/", hash: "about-the-patch", label: "About" },
+  { type: "external", href: "https://wiki.technocracy.tech/", label: "Treaty Law Wiki" },
   { type: "external", href: "https://patch98.wordpress.com/", label: "Patch98" },
   { type: "external", href: "https://electric-paradise.start.page", label: "Electric Paradise" },
   { type: "external", href: "https://singularity41.wordpress.com/", label: "Singularity University" },
@@ -125,17 +127,16 @@ export function SiteHeader() {
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
           <Link to="/" className="group flex items-center gap-3" onClick={() => setOpen(false)}>
-            <span
-              aria-hidden
-              className="grid h-10 w-10 place-items-center rounded-xl bg-[image:var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-elegant)] transition-transform group-hover:scale-105 group-active:scale-95"
-            >
-              <span className="text-sm font-black tracking-tighter">TP</span>
-            </span>
+            <img
+              src={patchLogo}
+              alt="The Patch — declassified seal"
+              className="h-12 w-12 rounded-full object-contain shadow-[var(--shadow-elegant)] transition-transform group-hover:rotate-3 group-hover:scale-105 group-active:scale-95"
+            />
             <span className="flex flex-col leading-none">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-                Independent Journalism
+              <span className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
+                · · · Declassified Dispatches · · ·
               </span>
-              <span className="mt-1 text-xl font-bold tracking-tight text-foreground">
+              <span className="mt-1 font-display text-xl font-bold tracking-tight text-foreground">
                 The Patch
               </span>
             </span>

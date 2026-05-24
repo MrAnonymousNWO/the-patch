@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { getPosts } from "@/lib/wordpress.functions";
 import { RssFeeds } from "@/components/RssFeeds";
 import { SocialEmbeds } from "@/components/SocialEmbeds";
+import patchLogo from "@/assets/patch-logo.png";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -71,37 +72,83 @@ function Index() {
 
   return (
     <div className="text-foreground">
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border bg-[image:var(--gradient-hero)]">
-        <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-[image:var(--gradient-primary)] opacity-20 blur-3xl" />
-        <div className="absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
-        <div className="relative mx-auto max-w-6xl px-6 py-20 md:py-28">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium uppercase tracking-wider text-primary backdrop-blur">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-            Independent journalism · Live from WordPress
-          </span>
-          <h1 className="mt-6 max-w-3xl bg-gradient-to-br from-foreground via-foreground to-primary bg-clip-text text-4xl font-bold leading-[1.05] tracking-tight text-transparent md:text-6xl lg:text-7xl">
-            The Patch — A World Without Power for Anyone.
-          </h1>
-          <p className="mt-5 max-w-2xl text-base text-muted-foreground md:text-lg">
-            Now there's AI Support &amp; Patch. Primary-source reporting on the Juridical
-            Singularity, the World Succession Deed 1400/98, NATO infrastructure and the future
-            of post-national legal order.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/"
-              hash="latest-posts"
-              className="inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-primary)] px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)] active:translate-y-0"
-            >
-              Read latest articles →
-            </Link>
-            <Link
-              to="/pages"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-6 py-3 text-sm font-semibold text-foreground backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary active:translate-y-0"
-            >
-              Browse pages
-            </Link>
+      {/* Hero — 1960s declassified dispatch */}
+      <section className="relative overflow-hidden border-b-2 border-dashed border-primary/40">
+        <div className="absolute inset-0 bg-[image:var(--gradient-hero)]" aria-hidden />
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-[0.18]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent 0, transparent 27px, color-mix(in oklab, var(--primary) 25%, transparent) 28px), repeating-linear-gradient(90deg, transparent 0, transparent 80px, color-mix(in oklab, var(--primary) 8%, transparent) 81px)",
+          }}
+        />
+        <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-[auto_1fr] md:py-24">
+          <div className="flex items-start justify-center md:justify-start">
+            <div className="relative">
+              <img
+                src={patchLogo}
+                alt="The Patch — official seal"
+                className="h-40 w-40 rotate-[-4deg] rounded-full object-contain shadow-[var(--shadow-glow)] md:h-52 md:w-52"
+              />
+              <span className="stamp absolute -right-3 -top-3 text-[10px]">Top Secret</span>
+            </div>
+          </div>
+
+          <div>
+            <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+              <span className="rounded-sm border border-primary/40 bg-card/70 px-2 py-1">
+                Dossier № 1400/98
+              </span>
+              <span className="hidden md:inline">·</span>
+              <span>For Public Release</span>
+              <span className="hidden md:inline">·</span>
+              <span>
+                {new Date().toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
+
+            <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] tracking-tight text-foreground md:text-6xl lg:text-7xl">
+              The Patch —<br />
+              <span className="underline decoration-primary decoration-[3px] underline-offset-[10px]">
+                A World Without Power
+              </span>{" "}
+              for Anyone.
+            </h1>
+
+            <p className="mt-6 max-w-2xl border-l-4 border-primary/60 bg-card/40 px-4 py-2 text-base md:text-lg">
+              Primary-source reporting on the Juridical Singularity, the World Succession Deed
+              1400/98, NATO infrastructure and the future of post-national legal order. Now with
+              AI Support &amp; Patch.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/"
+                hash="latest-posts"
+                className="inline-flex items-center gap-2 rounded-sm border-2 border-primary bg-primary px-6 py-3 text-sm font-bold uppercase tracking-[0.15em] text-primary-foreground shadow-[var(--shadow-elegant)] transition-all hover:-translate-y-0.5 hover:bg-primary/90 active:translate-y-0"
+              >
+                ▸ Read the dispatches
+              </Link>
+              <Link
+                to="/pages"
+                className="inline-flex items-center gap-2 rounded-sm border-2 border-primary/60 bg-card/70 px-6 py-3 text-sm font-bold uppercase tracking-[0.15em] text-foreground backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary active:translate-y-0"
+              >
+                ▸ Browse pages
+              </Link>
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+              <span className="rounded-sm bg-card/60 px-2 py-1">NATO · SOFA</span>
+              <span className="rounded-sm bg-card/60 px-2 py-1">Treaty Chains</span>
+              <span className="rounded-sm bg-card/60 px-2 py-1">ITU</span>
+              <span className="rounded-sm bg-card/60 px-2 py-1">ASI Governance</span>
+              <span className="rounded-sm bg-card/60 px-2 py-1">Electric Technocracy</span>
+            </div>
           </div>
         </div>
       </section>
