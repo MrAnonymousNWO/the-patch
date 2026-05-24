@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 function LazyEmbed({
   title,
   src,
+  fallbackHref,
   aspect = "16 / 9",
   allow,
   allowFullScreen,
@@ -10,6 +11,7 @@ function LazyEmbed({
 }: {
   title: string;
   src: string;
+  fallbackHref: string;
   aspect?: string;
   allow?: string;
   allowFullScreen?: boolean;
@@ -18,6 +20,7 @@ function LazyEmbed({
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [errored, setErrored] = useState(false);
 
   useEffect(() => {
     if (!ref.current || visible) return;
@@ -38,19 +41,43 @@ function LazyEmbed({
     return () => io.disconnect();
   }, [visible]);
 
+  // Timeout fallback: if iframe doesn't load within 10s, show fallback
+  useEffect(() => {
+    if (!visible || loaded || errored) return;
+    const t = setTimeout(() => {
+      if (!loaded) setErrored(true);
+    }, 10000);
+    return () => clearTimeout(t);
+  }, [visible, loaded, errored]);
+
   return (
     <div
       ref={ref}
       className="relative overflow-hidden rounded-xl bg-muted/40"
       style={{ aspectRatio: aspect, ...style }}
     >
-      {!loaded && (
+      {!loaded && !errored && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="h-8 w-8 animate-pulse rounded-full bg-primary/30" />
           <span className="sr-only">Loading {title}…</span>
         </div>
       )}
-      {visible && (
+      {errored && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+          <p className="text-sm text-muted-foreground">
+            This embed couldn’t load (rate limit or blocked scripts).
+          </p>
+          <a
+            href={fallbackHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+          >
+            Open {title} ↗
+          </a>
+        </div>
+      )}
+      {visible && !errored && (
         <iframe
           title={title}
           src={src}
@@ -59,6 +86,7 @@ function LazyEmbed({
           allow={allow}
           allowFullScreen={allowFullScreen}
           onLoad={() => setLoaded(true)}
+          onError={() => setErrored(true)}
           className="absolute inset-0 h-full w-full"
         />
       )}
@@ -93,6 +121,7 @@ export function SocialEmbeds() {
               title="SoundCloud — World Succession Deed"
               aspect="4 / 3"
               allow="autoplay"
+              fallbackHref="https://soundcloud.com/world-succession-deed"
               src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/world-succession-deed&color=%2358a6ff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
             />
           </div>
@@ -116,6 +145,7 @@ export function SocialEmbeds() {
               style={{ borderRadius: 12 }}
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               allowFullScreen
+              fallbackHref="https://open.spotify.com/show/1oxMMUvvIAjtzM8WXOXN9d"
               src="https://open.spotify.com/embed/show/1oxMMUvvIAjtzM8WXOXN9d?utm_source=generator&theme=0"
             />
           </div>
@@ -131,6 +161,7 @@ export function SocialEmbeds() {
           <LazyEmbed
             title="YouTube Channel Videos"
             aspect="16 / 11"
+            fallbackHref="https://www.youtube.com/@Staatensukzessionsurkunde-1400"
             src="https://widgets.sociablekit.com/youtube-channel-videos/iframe/25680810"
           />
         </div>

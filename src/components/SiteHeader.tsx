@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 type NavLink =
@@ -14,6 +14,7 @@ const navLinks: NavLink[] = [
   { type: "hash", to: "/", hash: "about-the-patch", label: "About" },
   { type: "external", href: "https://patch98.wordpress.com/", label: "Patch98" },
   { type: "external", href: "https://electric-paradise.start.page", label: "Electric Paradise" },
+  { type: "external", href: "https://singularity41.wordpress.com/", label: "Singularity University" },
   { type: "external", href: "/sitemap.xml", label: "Sitemap" },
 ];
 
@@ -26,6 +27,7 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const hash = useRouterState({ select: (s) => s.location.hash });
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setOpen(false);
@@ -37,6 +39,27 @@ export function SiteHeader() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Close on outside click and ESC
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent | TouchEvent) => {
+      if (drawerRef.current && !drawerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("touchstart", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("touchstart", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
   const renderLink = (link: NavLink, onClick?: () => void) => {
     if (link.type === "internal") {
@@ -90,22 +113,34 @@ export function SiteHeader() {
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <Link to="/" className="group flex items-center gap-3" onClick={() => setOpen(false)}>
-          <span
-            aria-hidden
-            className="grid h-10 w-10 place-items-center rounded-xl bg-[image:var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-elegant)] transition-transform group-hover:scale-105 group-active:scale-95"
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            aria-controls="side-nav"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card/70 text-foreground backdrop-blur transition-all hover:border-primary hover:text-primary active:scale-95 lg:hidden"
+            onClick={() => setOpen((v) => !v)}
           >
-            <span className="text-sm font-black tracking-tighter">TP</span>
-          </span>
-          <span className="flex flex-col leading-none">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-              Independent Journalism
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+          <Link to="/" className="group flex items-center gap-3" onClick={() => setOpen(false)}>
+            <span
+              aria-hidden
+              className="grid h-10 w-10 place-items-center rounded-xl bg-[image:var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-elegant)] transition-transform group-hover:scale-105 group-active:scale-95"
+            >
+              <span className="text-sm font-black tracking-tighter">TP</span>
             </span>
-            <span className="mt-1 text-xl font-bold tracking-tight text-foreground">
-              The Patch
+            <span className="flex flex-col leading-none">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                Independent Journalism
+              </span>
+              <span className="mt-1 text-xl font-bold tracking-tight text-foreground">
+                The Patch
+              </span>
             </span>
-          </span>
-        </Link>
+          </Link>
+        </div>
 
         <nav aria-label="Primary" className="hidden lg:block">
           <ul className="flex flex-wrap items-center gap-6 text-sm font-medium">
@@ -114,34 +149,48 @@ export function SiteHeader() {
             ))}
           </ul>
         </nav>
-
-        <button
-          type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card/70 text-foreground backdrop-blur transition-all hover:border-primary hover:text-primary active:scale-95 lg:hidden"
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
       </div>
 
-      {open && (
-        <nav
-          id="mobile-nav"
-          aria-label="Mobile primary"
-          className="border-t border-border bg-sidebar/95 backdrop-blur-xl lg:hidden"
+      {/* Left-side drawer (mobile/tablet) */}
+      <div
+        className={`fixed inset-0 z-40 lg:hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+        aria-hidden={!open}
+      >
+        <div
+          className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+        />
+        <aside
+          ref={drawerRef}
+          id="side-nav"
+          aria-label="Side navigation"
+          className={`absolute left-0 top-0 h-full w-72 max-w-[85vw] border-r border-border bg-sidebar/95 shadow-2xl backdrop-blur-xl transition-transform duration-300 ${
+            open ? "translate-x-0" : "-translate-x-full"
+          }`}
         >
-          <ul className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-4 text-base font-medium">
-            {navLinks.map((l) => (
-              <li key={l.label} className="rounded-lg px-2 py-2 transition-colors hover:bg-accent/60">
-                {renderLink(l, () => setOpen(false))}
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+          <div className="flex items-center justify-between border-b border-border px-5 py-4">
+            <span className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Menu
+            </span>
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setOpen(false)}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:border-primary hover:text-primary"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <nav aria-label="Mobile primary">
+            <ul className="flex flex-col gap-1 px-3 py-4 text-base font-medium">
+              {navLinks.map((l) => (
+                <li key={l.label} className="rounded-lg px-2 py-2 transition-colors hover:bg-accent/60">
+                  {renderLink(l, () => setOpen(false))}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+      </div>
     </header>
   );
 }

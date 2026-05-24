@@ -1,7 +1,37 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { getPageBySlug, getPages } from "@/lib/wordpress.functions";
 import { SocialEmbeds } from "@/components/SocialEmbeds";
 import { RssFeeds } from "@/components/RssFeeds";
+
+function slugify(s: string) {
+  return s
+    .toLowerCase()
+    .replace(/<[^>]+>/g, "")
+    .replace(/&[a-z]+;/g, " ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
+    .slice(0, 80);
+}
+
+function buildTocAndContent(html: string): { toc: { id: string; text: string; level: number }[]; content: string } {
+  const toc: { id: string; text: string; level: number }[] = [];
+  const seen = new Set<string>();
+  const content = html.replace(/<h([23])([^>]*)>([\s\S]*?)<\/h\1>/gi, (_m, lvl, attrs, inner) => {
+    const text = String(inner).replace(/<[^>]+>/g, "").trim();
+    if (!text) return _m;
+    let id = slugify(text);
+    let i = 2;
+    while (seen.has(id)) id = `${slugify(text)}-${i++}`;
+    seen.add(id);
+    toc.push({ id, text, level: Number(lvl) });
+    const hasId = /\sid=/.test(attrs);
+    const newAttrs = hasId ? attrs : `${attrs} id="${id}"`;
+    return `<h${lvl}${newAttrs}>${inner}</h${lvl}>`;
+  });
+  return { toc, content };
+}
+
 
 export const Route = createFileRoute("/pages/$slug")({
   loader: async ({ params }) => {
@@ -78,6 +108,10 @@ export const Route = createFileRoute("/pages/$slug")({
 
 function PageView() {
   const { page, pages } = Route.useLoaderData();
+  const { toc, content } = useMemo(
+    () => buildTocAndContent(page.content || ""),
+    [page.content]
+  );
   return (
     <article className="text-foreground">
       <div className="mx-auto max-w-3xl px-6 py-12">
@@ -94,10 +128,38 @@ function PageView() {
             className="mt-8 w-full rounded-2xl object-cover shadow-[var(--shadow-elegant)]"
           />
         )}
+
+        {toc.length >= 2 && (
+          <nav
+            aria-label="Table of contents"
+            className="mt-8 rounded-2xl border border-border bg-card/70 p-5 backdrop-blur"
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              On this page
+            </p>
+            <ol className="mt-3 space-y-1.5 text-sm">
+              {toc.map((item) => (
+                <li
+                  key={item.id}
+                  className={item.level === 3 ? "ml-4" : ""}
+                >
+                  <a
+                    href={`#${item.id}`}
+                    className="text-foreground/80 underline-offset-4 hover:text-primary hover:underline"
+                  >
+                    {item.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         <div
-          className="prose prose-neutral mt-8 max-w-none text-foreground"
-          dangerouslySetInnerHTML={{ __html: page.content }}
+          className="prose prose-neutral mt-8 max-w-none text-foreground scroll-mt-24 [&_h2]:scroll-mt-24 [&_h3]:scroll-mt-24"
+          dangerouslySetInnerHTML={{ __html: content }}
         />
+
 
         <SocialEmbeds />
         <RssFeeds />
