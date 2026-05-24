@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 type NavLink =
@@ -14,6 +14,7 @@ const navLinks: NavLink[] = [
   { type: "hash", to: "/", hash: "about-the-patch", label: "About" },
   { type: "external", href: "https://patch98.wordpress.com/", label: "Patch98" },
   { type: "external", href: "https://electric-paradise.start.page", label: "Electric Paradise" },
+  { type: "external", href: "https://singularity41.wordpress.com/", label: "Singularity University" },
   { type: "external", href: "/sitemap.xml", label: "Sitemap" },
 ];
 
