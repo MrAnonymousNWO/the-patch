@@ -1,7 +1,37 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { getPageBySlug, getPages } from "@/lib/wordpress.functions";
 import { SocialEmbeds } from "@/components/SocialEmbeds";
 import { RssFeeds } from "@/components/RssFeeds";
+
+function slugify(s: string) {
+  return s
+    .toLowerCase()
+    .replace(/<[^>]+>/g, "")
+    .replace(/&[a-z]+;/g, " ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
+    .slice(0, 80);
+}
+
+function buildTocAndContent(html: string): { toc: { id: string; text: string; level: number }[]; content: string } {
+  const toc: { id: string; text: string; level: number }[] = [];
+  const seen = new Set<string>();
+  const content = html.replace(/<h([23])([^>]*)>([\s\S]*?)<\/h\1>/gi, (_m, lvl, attrs, inner) => {
+    const text = String(inner).replace(/<[^>]+>/g, "").trim();
+    if (!text) return _m;
+    let id = slugify(text);
+    let i = 2;
+    while (seen.has(id)) id = `${slugify(text)}-${i++}`;
+    seen.add(id);
+    toc.push({ id, text, level: Number(lvl) });
+    const hasId = /\sid=/.test(attrs);
+    const newAttrs = hasId ? attrs : `${attrs} id="${id}"`;
+    return `<h${lvl}${newAttrs}>${inner}</h${lvl}>`;
+  });
+  return { toc, content };
+}
+
 
 export const Route = createFileRoute("/pages/$slug")({
   loader: async ({ params }) => {
