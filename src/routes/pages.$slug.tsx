@@ -108,6 +108,10 @@ export const Route = createFileRoute("/pages/$slug")({
 
 function PageView() {
   const { page, pages } = Route.useLoaderData();
+  const { toc, content } = useMemo(
+    () => buildTocAndContent(page.content || ""),
+    [page.content]
+  );
   return (
     <article className="text-foreground">
       <div className="mx-auto max-w-3xl px-6 py-12">
@@ -124,10 +128,38 @@ function PageView() {
             className="mt-8 w-full rounded-2xl object-cover shadow-[var(--shadow-elegant)]"
           />
         )}
+
+        {toc.length >= 2 && (
+          <nav
+            aria-label="Table of contents"
+            className="mt-8 rounded-2xl border border-border bg-card/70 p-5 backdrop-blur"
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              On this page
+            </p>
+            <ol className="mt-3 space-y-1.5 text-sm">
+              {toc.map((item) => (
+                <li
+                  key={item.id}
+                  className={item.level === 3 ? "ml-4" : ""}
+                >
+                  <a
+                    href={`#${item.id}`}
+                    className="text-foreground/80 underline-offset-4 hover:text-primary hover:underline"
+                  >
+                    {item.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         <div
-          className="prose prose-neutral mt-8 max-w-none text-foreground"
-          dangerouslySetInnerHTML={{ __html: page.content }}
+          className="prose prose-neutral mt-8 max-w-none text-foreground scroll-mt-24 [&_h2]:scroll-mt-24 [&_h3]:scroll-mt-24"
+          dangerouslySetInnerHTML={{ __html: content }}
         />
+
 
         <SocialEmbeds />
         <RssFeeds />
