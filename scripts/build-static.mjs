@@ -82,8 +82,9 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
 <body>
 <header>
   <a href="/the-patch/">Home</a>
+  <a href="/the-patch/blog/">Blog</a>
   <a href="/the-patch/pages/">Pages</a>
-  <a href="/the-patch/sitemap.xml">Sitemap</a>
+  <a href="/the-patch/search/">Search</a>
   <a href="https://wiki.technocracy.tech/" target="_blank" rel="noopener">Treaty Law Wiki</a>
 </header>
 <main>${body}</main>
