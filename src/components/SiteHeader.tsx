@@ -4,20 +4,20 @@ import { Menu, X } from "lucide-react";
 import patchLogo from "@/assets/patch-logo.png";
 
 type NavLink =
-  | { type: "internal"; to: "/" | "/pages"; label: string; exact?: boolean }
+  | { type: "internal"; to: "/" | "/pages" | "/blog" | "/search"; label: string; exact?: boolean }
   | { type: "hash"; to: "/"; hash: string; label: string }
   | { type: "external"; href: string; label: string };
 
 const navLinks: NavLink[] = [
   { type: "internal", to: "/", label: "Home", exact: true },
-  { type: "hash", to: "/", hash: "latest-posts", label: "Articles" },
+  { type: "internal", to: "/blog", label: "Blog" },
   { type: "internal", to: "/pages", label: "Pages" },
+  { type: "internal", to: "/search", label: "Search" },
   { type: "hash", to: "/", hash: "about-the-patch", label: "About" },
   { type: "external", href: "https://wiki.technocracy.tech/", label: "Treaty Law Wiki" },
   { type: "external", href: "https://patch98.wordpress.com/", label: "Patch98" },
   { type: "external", href: "https://electric-paradise.start.page", label: "Electric Paradise" },
   { type: "external", href: "https://singularity41.wordpress.com/", label: "Singularity University" },
-  { type: "external", href: "/sitemap.xml", label: "Sitemap" },
 ];
 
 const baseCls =

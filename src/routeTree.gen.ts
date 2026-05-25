@@ -11,10 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapIndexDotxmlRouteImport } from './routes/sitemap-index[.]xml'
+import { Route as SearchIndexDotjsonRouteImport } from './routes/search-index[.]json'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as PagesRouteImport } from './routes/pages'
 import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as PagesSlugRouteImport } from './routes/pages.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
@@ -26,6 +29,16 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SitemapIndexDotxmlRoute = SitemapIndexDotxmlRouteImport.update({
   id: '/sitemap-index.xml',
   path: '/sitemap-index.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchIndexDotjsonRoute = SearchIndexDotjsonRouteImport.update({
+  id: '/search-index.json',
+  path: '/search-index.json',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
@@ -48,6 +61,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PagesSlugRoute = PagesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -64,20 +82,26 @@ export interface FileRoutesByFullPath {
   '/feed.xml': typeof FeedDotxmlRoute
   '/pages': typeof PagesRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
+  '/search-index.json': typeof SearchIndexDotjsonRoute
   '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
+  '/blog/': typeof BlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/feed.xml': typeof FeedDotxmlRoute
   '/pages': typeof PagesRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
+  '/search-index.json': typeof SearchIndexDotjsonRoute
   '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
+  '/blog': typeof BlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,10 +109,13 @@ export interface FileRoutesById {
   '/feed.xml': typeof FeedDotxmlRoute
   '/pages': typeof PagesRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
+  '/search-index.json': typeof SearchIndexDotjsonRoute
   '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
+  '/blog/': typeof BlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,30 +124,39 @@ export interface FileRouteTypes {
     | '/feed.xml'
     | '/pages'
     | '/robots.txt'
+    | '/search'
+    | '/search-index.json'
     | '/sitemap-index.xml'
     | '/sitemap.xml'
     | '/blog/$slug'
     | '/pages/$slug'
+    | '/blog/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/feed.xml'
     | '/pages'
     | '/robots.txt'
+    | '/search'
+    | '/search-index.json'
     | '/sitemap-index.xml'
     | '/sitemap.xml'
     | '/blog/$slug'
     | '/pages/$slug'
+    | '/blog'
   id:
     | '__root__'
     | '/'
     | '/feed.xml'
     | '/pages'
     | '/robots.txt'
+    | '/search'
+    | '/search-index.json'
     | '/sitemap-index.xml'
     | '/sitemap.xml'
     | '/blog/$slug'
     | '/pages/$slug'
+    | '/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -128,9 +164,12 @@ export interface RootRouteChildren {
   FeedDotxmlRoute: typeof FeedDotxmlRoute
   PagesRoute: typeof PagesRouteWithChildren
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SearchRoute: typeof SearchRoute
+  SearchIndexDotjsonRoute: typeof SearchIndexDotjsonRoute
   SitemapIndexDotxmlRoute: typeof SitemapIndexDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -147,6 +186,20 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-index.xml'
       fullPath: '/sitemap-index.xml'
       preLoaderRoute: typeof SitemapIndexDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search-index.json': {
+      id: '/search-index.json'
+      path: '/search-index.json'
+      fullPath: '/search-index.json'
+      preLoaderRoute: typeof SearchIndexDotjsonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robots.txt': {
@@ -175,6 +228,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pages/$slug': {
@@ -209,9 +269,12 @@ const rootRouteChildren: RootRouteChildren = {
   FeedDotxmlRoute: FeedDotxmlRoute,
   PagesRoute: PagesRouteWithChildren,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SearchRoute: SearchRoute,
+  SearchIndexDotjsonRoute: SearchIndexDotjsonRoute,
   SitemapIndexDotxmlRoute: SitemapIndexDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -82,8 +82,9 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
 <body>
 <header>
   <a href="/the-patch/">Home</a>
+  <a href="/the-patch/blog/">Blog</a>
   <a href="/the-patch/pages/">Pages</a>
-  <a href="/the-patch/sitemap.xml">Sitemap</a>
+  <a href="/the-patch/search/">Search</a>
   <a href="https://wiki.technocracy.tech/" target="_blank" rel="noopener">Treaty Law Wiki</a>
 </header>
 <main>${body}</main>
@@ -161,6 +162,61 @@ async function main() {
     url: `${SITE_URL}/pages/`,
     body: listBody("Pages", pages, "/the-patch/pages"),
   }));
+
+  // /blog index
+  await writePage("blog", layout({
+    title: "Blog — All Articles · The Patch",
+    description: "Every dispatch from The Patch — articles synced from WordPress.",
+    kw: "The Patch, blog, articles",
+    url: `${SITE_URL}/blog/`,
+    body: listBody("Blog — All Articles", posts, "/the-patch/blog"),
+  }));
+
+  // /search (static client-side search over search-index.json)
+  await writePage("search", layout({
+    title: "Search — The Patch",
+    description: "Static search across every article and page on The Patch.",
+    kw: "The Patch, search, index",
+    url: `${SITE_URL}/search/`,
+    body: `
+      <h1>Search</h1>
+      <input id="q" type="search" placeholder="Search…" style="width:100%;padding:14px;font-size:1rem;border:2px solid #88b8d8;border-radius:8px;background:#fff" />
+      <ul id="r" style="list-style:none;padding:0;margin-top:16px"></ul>
+      <script>
+        (async () => {
+          const res = await fetch('/the-patch/search-index.json');
+          const { entries = [] } = await res.json();
+          const r = document.getElementById('r');
+          const q = document.getElementById('q');
+          function render(list){
+            r.innerHTML = list.slice(0,80).map(e =>
+              '<li style="margin:8px 0;padding:12px;border:1px solid #88b8d8;border-radius:8px;background:#fff">' +
+              '<small style="text-transform:uppercase;letter-spacing:.15em;color:#456">' + e.type + '</small><br>' +
+              '<a href="/the-patch/' + (e.type==='post'?'blog':'pages') + '/' + e.slug + '/" style="font-weight:700">' + e.title + '</a>' +
+              (e.excerpt? '<p style="margin:6px 0 0;color:#456">'+e.excerpt+'</p>':'') +
+              '</li>').join('');
+          }
+          render(entries);
+          q.addEventListener('input', () => {
+            const n = q.value.trim().toLowerCase();
+            if(!n) return render(entries);
+            render(entries.filter(e => (e.title+' '+e.excerpt).toLowerCase().includes(n)));
+          });
+        })();
+      </script>`,
+  }));
+
+  // Static search index JSON
+  const searchEntries = [
+    ...posts.map((p) => ({ type: "post", slug: p.slug, title: strip(p.title), excerpt: strip(p.excerpt).slice(0, 220), modified: p.modified || p.date })),
+    ...pages.map((p) => ({ type: "page", slug: p.slug, title: strip(p.title), excerpt: strip(p.excerpt).slice(0, 220), modified: p.modified || p.date })),
+  ].sort((a, b) => (b.modified || "").localeCompare(a.modified || ""));
+  await writeFile(
+    join(OUT, "search-index.json"),
+    JSON.stringify({ generatedAt: new Date().toISOString(), total: searchEntries.length, entries: searchEntries }),
+  );
+
+
 
   // Posts
   for (const p of posts) {
