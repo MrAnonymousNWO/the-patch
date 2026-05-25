@@ -1,0 +1,31 @@
+name: Trigger on WordPress Update
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # alle 5 Minuten
+  workflow_dispatch:
+
+jobs:
+  check-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch RSS feed
+        run: curl -s https://singularity41.wordpress.com/feed/ -o feed.xml
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet HEAD -- feed.xml; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger build
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/MrAnonymousNWO/the-patch/dispatches \
+            -d '{"event_type": "wordpress-updated"}'
