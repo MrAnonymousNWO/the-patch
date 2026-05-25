@@ -1,0 +1,52 @@
+name: Static export & deploy to GitHub Pages
+
+on:
+  # Run on every push to main
+  push:
+    branches: [main]
+  # Allow manual runs from the Actions tab
+  workflow_dispatch:
+  # Rebuild every 30 minutes so WordPress edits propagate automatically
+  schedule:
+    - cron: "*/30 * * * *"
+  # Optional: trigger from external systems (e.g. a WordPress webhook hitting
+  # the GitHub repository_dispatch API).
+  repository_dispatch:
+    types: [wordpress-updated]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://mranonymousnwo.github.io/the-patch
+      WP_SITE: patch98.wordpress.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Build static site from WordPress
+        run: node scripts/build-static.mjs
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-static
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
