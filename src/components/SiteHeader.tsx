@@ -120,10 +120,12 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+      className={`sticky top-0 z-50 border-b transition-all duration-300 will-change-transform ${
+        hidden && !open ? "-translate-y-full" : "translate-y-0"
+      } ${
         scrolled
-          ? "border-border/60 bg-sidebar/80 backdrop-blur-xl shadow-[var(--shadow-elegant)]"
-          : "border-transparent bg-sidebar/40 backdrop-blur"
+          ? "border-border/60 bg-[hsl(205_85%_88%)] shadow-[var(--shadow-elegant)]"
+          : "border-transparent bg-[hsl(205_85%_92%)]"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
