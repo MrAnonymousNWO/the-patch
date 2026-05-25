@@ -1,31 +1,55 @@
-name: Trigger on WordPress Update
+name: Trigger build on WordPress update
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # alle 5 Minuten
+    - cron: "*/10 * * * *"   # check every 10 minutes
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   check-feed:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch RSS feed
-        run: curl -s https://singularity41.wordpress.com/feed/ -o feed.xml
+      - name: Restore previous feed snapshot
+        id: restore
+        uses: actions/cache/restore@v4
+        with:
+          path: feed.cache.xml
+          key: wp-feed-cache
+          restore-keys: |
+            wp-feed-cache
+
+      - name: Fetch current RSS feed
+        run: curl -sfSL https://patch98.wordpress.com/feed/ -o feed.new.xml
 
       - name: Detect changes
         id: diff
         run: |
-          if git diff --quiet HEAD -- feed.xml; then
+          if [ -f feed.cache.xml ] && cmp -s feed.cache.xml feed.new.xml; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Trigger build
+      - name: Update cached feed snapshot
+        if: steps.diff.outputs.changed == 'true'
+        run: cp feed.new.xml feed.cache.xml
+
+      - name: Save updated snapshot
+        if: steps.diff.outputs.changed == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: feed.cache.xml
+          key: wp-feed-cache-${{ github.run_id }}
+
+      - name: Dispatch build
         if: steps.diff.outputs.changed == 'true'
         run: |
-          curl -X POST \
+          curl -fsSL -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/MrAnonymousNWO/the-patch/dispatches \
-            -d '{"event_type": "wordpress-updated"}'
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d '{"event_type":"wordpress-updated"}'
