@@ -74,6 +74,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "google-site-verification", content: "bL0Q0TMItHr_gRP_a2on4EXDhl5UO2VaOsbH0pSmEqU" },
+      { name: "google-site-verification", content: "POS6A_n9nSGi6W4cWi-49r84-3ML8vTuLRBZQX-OFBc" },
       { title: "Global Patch" },
       { name: "description", content: "Patch for a Better World Without Nation-States, Ideologies, or Politicians. Prepare the world for people who take responsibility for themselves." },
       { name: "author", content: "Lovable" },

@@ -27,16 +27,28 @@ const activeCls = "text-primary after:w-full";
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const hash = useRouterState({ select: (s) => s.location.hash });
   const drawerRef = useRef<HTMLDivElement>(null);
+  const lastYRef = useRef(0);
 
   useEffect(() => {
     setOpen(false);
   }, [pathname, hash]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    lastYRef.current = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 8);
+      const delta = y - lastYRef.current;
+      if (Math.abs(delta) > 6) {
+        if (delta > 0 && y > 80) setHidden(true);
+        else if (delta < 0) setHidden(false);
+        lastYRef.current = y;
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
