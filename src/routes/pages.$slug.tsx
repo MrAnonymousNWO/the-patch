@@ -33,6 +33,21 @@ function buildTocAndContent(html: string): { toc: { id: string; text: string; le
 }
 
 
+function deriveKeywords(title: string, content: string): string {
+  const text = `${title} ${content.replace(/<[^>]+>/g, " ")}`.toLowerCase();
+  const stop = new Set([
+    "the","and","for","that","with","this","from","into","were","have","has","had","but","not","are","was","you","your","their","they","its","our","also","such","than","then","over","under","about","more","most","some","any","all","one","two","new","per","via","upon","each","other","which","while","where","when","what","who","how","why",
+  ]);
+  const counts = new Map<string, number>();
+  for (const w of text.match(/[a-zäöüß]{4,}/g) || []) {
+    if (stop.has(w)) continue;
+    counts.set(w, (counts.get(w) || 0) + 1);
+  }
+  const base = ["Juridical Singularity","Electric Technocracy","World Succession Deed 1400/98","Treaty Chain","The Patch"];
+  const top = [...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,8).map(([w])=>w);
+  return [...base, ...top].join(", ");
+}
+
 export const Route = createFileRoute("/pages/$slug")({
   loader: async ({ params }) => {
     const [{ page }, { pages }] = await Promise.all([
@@ -44,12 +59,15 @@ export const Route = createFileRoute("/pages/$slug")({
   head: ({ loaderData, params }) => {
     const page = loaderData?.page;
     if (!page) return { meta: [{ title: "Page — The Patch" }] };
-    const description = page.excerpt || `${page.title} — The Patch`;
+    const plain = (page.content || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const description = (page.excerpt || plain).slice(0, 160) || `${page.title} — The Patch`;
+    const keywords = deriveKeywords(page.title, page.content || "");
     const url = `https://the-patch.lovable.app/pages/${params.slug}`;
     return {
       meta: [
         { title: `${page.title} — The Patch` },
         { name: "description", content: description },
+        { name: "keywords", content: keywords },
         { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
         { property: "og:title", content: page.title },
         { property: "og:description", content: description },
@@ -73,6 +91,23 @@ export const Route = createFileRoute("/pages/$slug")({
           type: "application/rss+xml",
           title: "The Patch — RSS Feed",
           href: "/feed.xml",
+        },
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: page.title,
+            description,
+            keywords,
+            mainEntityOfPage: url,
+            datePublished: page.date,
+            dateModified: page.modified,
+            ...(page.featured_image ? { image: page.featured_image } : {}),
+            publisher: { "@type": "Organization", name: "The Patch" },
+          }),
         },
       ],
     };

@@ -27,16 +27,28 @@ const activeCls = "text-primary after:w-full";
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const hash = useRouterState({ select: (s) => s.location.hash });
   const drawerRef = useRef<HTMLDivElement>(null);
+  const lastYRef = useRef(0);
 
   useEffect(() => {
     setOpen(false);
   }, [pathname, hash]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    lastYRef.current = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 8);
+      const delta = y - lastYRef.current;
+      if (Math.abs(delta) > 6) {
+        if (delta > 0 && y > 80) setHidden(true);
+        else if (delta < 0) setHidden(false);
+        lastYRef.current = y;
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -108,10 +120,12 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+      className={`sticky top-0 z-50 border-b transition-all duration-300 will-change-transform ${
+        hidden && !open ? "-translate-y-full" : "translate-y-0"
+      } ${
         scrolled
-          ? "border-border/60 bg-sidebar/80 backdrop-blur-xl shadow-[var(--shadow-elegant)]"
-          : "border-transparent bg-sidebar/40 backdrop-blur"
+          ? "border-border/60 bg-[hsl(205_85%_88%)] shadow-[var(--shadow-elegant)]"
+          : "border-transparent bg-[hsl(205_85%_92%)]"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
