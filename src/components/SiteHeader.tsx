@@ -135,7 +135,7 @@ export function SiteHeader() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="side-nav"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card/70 text-foreground backdrop-blur transition-all hover:border-primary hover:text-primary active:scale-95 lg:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-[hsl(205_85%_92%)] text-foreground transition-all hover:border-primary hover:text-primary active:scale-95 lg:hidden"
             onClick={() => setOpen((v) => !v)}
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
