@@ -178,7 +178,7 @@ export function SiteHeader() {
           ref={drawerRef}
           id="side-nav"
           aria-label="Side navigation"
-          className={`absolute left-0 top-0 h-full w-72 max-w-[85vw] border-r border-border bg-sidebar/95 shadow-2xl backdrop-blur-xl transition-transform duration-300 ${
+          className={`absolute left-0 top-0 h-full w-72 max-w-[85vw] border-r border-border bg-[hsl(205_85%_92%)] shadow-2xl transition-transform duration-300 ${
             open ? "translate-x-0" : "-translate-x-full"
           }`}
         >

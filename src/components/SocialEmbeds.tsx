@@ -112,30 +112,6 @@ export function SocialEmbeds() {
 
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
         <div className="rounded-2xl border border-border bg-background/60 p-5 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-[var(--shadow-elegant)]">
-          <h3 className="text-lg font-semibold">Cassandra Cries — Music vs War</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            SoundCloud profile of World Succession Deed.
-          </p>
-          <div className="mt-4">
-            <LazyEmbed
-              title="SoundCloud — World Succession Deed"
-              aspect="4 / 3"
-              allow="autoplay"
-              fallbackHref="https://soundcloud.com/world-succession-deed"
-              src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/world-succession-deed&color=%2358a6ff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
-            />
-          </div>
-          <a
-            href="https://soundcloud.com/world-succession-deed"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-          >
-            Open on SoundCloud →
-          </a>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-background/60 p-5 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-[var(--shadow-elegant)]">
           <h3 className="text-lg font-semibold">Podcast on Spotify</h3>
           <p className="mt-1 text-sm text-muted-foreground">Listen to the latest episodes.</p>
           <div className="mt-4">
@@ -147,6 +123,25 @@ export function SocialEmbeds() {
               allowFullScreen
               fallbackHref="https://open.spotify.com/show/1oxMMUvvIAjtzM8WXOXN9d"
               src="https://open.spotify.com/embed/show/1oxMMUvvIAjtzM8WXOXN9d?utm_source=generator&theme=0"
+            />
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-background/60 p-5 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-[var(--shadow-elegant)]">
+          <h3 className="text-lg font-semibold">Artist on Spotify</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Follow the artist and stream tracks.</p>
+          <div className="mt-4">
+            <iframe
+              data-testid="embed-iframe"
+              title="Spotify Artist"
+              style={{ borderRadius: 12 }}
+              src="https://open.spotify.com/embed/artist/4y6vveUrD0JDdymjTUWTx3?utm_source=generator"
+              width="100%"
+              height={152}
+              frameBorder={0}
+              allowFullScreen
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
             />
           </div>
         </div>
@@ -165,6 +160,30 @@ export function SocialEmbeds() {
             src="https://widgets.sociablekit.com/youtube-channel-videos/iframe/25680810"
           />
         </div>
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-border bg-background/60 p-5 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-[var(--shadow-elegant)]">
+        <h3 className="text-lg font-semibold">Cassandra Cries — Music vs War</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          SoundCloud profile of World Succession Deed.
+        </p>
+        <div className="mt-4">
+          <LazyEmbed
+            title="SoundCloud — World Succession Deed"
+            aspect="4 / 3"
+            allow="autoplay"
+            fallbackHref="https://soundcloud.com/world-succession-deed"
+            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/world-succession-deed&color=%2358a6ff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
+          />
+        </div>
+        <a
+          href="https://soundcloud.com/world-succession-deed"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+        >
+          Open on SoundCloud →
+        </a>
       </div>
     </section>
   );
