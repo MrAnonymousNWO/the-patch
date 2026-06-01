@@ -198,7 +198,7 @@ export function SiteHeader() {
           <nav aria-label="Mobile primary">
             <ul className="flex flex-col gap-1 px-3 py-4 text-base font-medium">
               {navLinks.map((l) => (
-                <li key={l.label} className="rounded-lg px-2 py-2 transition-colors hover:bg-accent/60">
+                <li key={l.label} className="rounded-lg px-2 py-2 transition-colors bg-[hsl(205_85%_96%)] hover:bg-[hsl(205_85%_88%)]">
                   {renderLink(l, () => setOpen(false))}
                 </li>
               ))}
