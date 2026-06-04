@@ -75,7 +75,11 @@ export function SiteHeader() {
     };
   }, [open]);
 
-  const renderLink = (link: NavLink, onClick?: () => void) => {
+  const renderLink = (link: NavLink, onClick?: () => void, inDrawer = false) => {
+    const drawerBase = inDrawer
+      ? "block w-full rounded-md px-3 py-2 bg-[hsl(205_85%_96%)] hover:bg-[hsl(205_85%_86%)]"
+      : "";
+    const drawerActive = inDrawer ? "bg-[hsl(205_85%_78%)] !text-primary" : "";
     if (link.type === "internal") {
       const isActive =
         link.to === "/"
@@ -85,7 +89,7 @@ export function SiteHeader() {
         <Link
           to={link.to}
           activeOptions={{ exact: link.exact }}
-          className={`${baseCls} ${isActive ? activeCls : ""}`}
+          className={`${baseCls} ${drawerBase} ${isActive ? `${activeCls} ${drawerActive}` : ""}`}
           onClick={onClick}
         >
           {link.label}
@@ -98,7 +102,7 @@ export function SiteHeader() {
         <Link
           to={link.to}
           hash={link.hash}
-          className={`${baseCls} ${isActive ? activeCls : ""}`}
+          className={`${baseCls} ${drawerBase} ${isActive ? `${activeCls} ${drawerActive}` : ""}`}
           onClick={onClick}
         >
           {link.label}
@@ -110,7 +114,7 @@ export function SiteHeader() {
         href={link.href}
         target="_blank"
         rel="noopener noreferrer"
-        className={baseCls}
+        className={`${baseCls} ${drawerBase}`}
         onClick={onClick}
       >
         {link.label}
@@ -198,8 +202,8 @@ export function SiteHeader() {
           <nav aria-label="Mobile primary">
             <ul className="flex flex-col gap-1 px-3 py-4 text-base font-medium">
               {navLinks.map((l) => (
-                <li key={l.label} className="rounded-lg px-2 py-2 transition-colors bg-[hsl(205_85%_96%)] hover:bg-[hsl(205_85%_88%)]">
-                  {renderLink(l, () => setOpen(false))}
+                <li key={l.label} className="rounded-md">
+                  {renderLink(l, () => setOpen(false), true)}
                 </li>
               ))}
             </ul>
