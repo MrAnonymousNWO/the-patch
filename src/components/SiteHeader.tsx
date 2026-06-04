@@ -182,11 +182,15 @@ export function SiteHeader() {
           ref={drawerRef}
           id="side-nav"
           aria-label="Side navigation"
-          className={`absolute left-0 top-0 h-full w-72 max-w-[85vw] border-r border-border bg-[hsl(205_85%_92%)] shadow-2xl transition-transform duration-300 ${
+          style={{ backgroundColor: "hsl(205 85% 92%)" }}
+          className={`absolute left-0 top-0 h-full w-72 max-w-[85vw] overflow-y-auto border-r border-border shadow-2xl transition-transform duration-300 ${
             open ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="flex items-center justify-between border-b border-border px-5 py-4">
+          <div
+            style={{ backgroundColor: "hsl(205 85% 92%)" }}
+            className="sticky top-0 z-10 flex items-center justify-between border-b border-border px-5 py-4"
+          >
             <span className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               Menu
             </span>
@@ -194,12 +198,13 @@ export function SiteHeader() {
               type="button"
               aria-label="Close menu"
               onClick={() => setOpen(false)}
+              style={{ backgroundColor: "hsl(205 85% 92%)" }}
               className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:border-primary hover:text-primary"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
-          <nav aria-label="Mobile primary">
+          <nav aria-label="Mobile primary" style={{ backgroundColor: "hsl(205 85% 92%)" }}>
             <ul className="flex flex-col gap-1 px-3 py-4 text-base font-medium">
               {navLinks.map((l) => (
                 <li key={l.label} className="rounded-md">

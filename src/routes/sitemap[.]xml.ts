@@ -18,33 +18,30 @@ export const Route = createFileRoute("/sitemap.xml")({
             Authorization: `Bearer ${LOVABLE_API_KEY}`,
             "X-Connection-Api-Key": WORDPRESS_COM_API_KEY,
           };
+          async function fetchAll(type: "post" | "page") {
+            const out: { slug: string; modified: string; date: string }[] = [];
+            let page = 1;
+            // Cap at 20 pages * 100 = 2000 items to avoid runaway loops
+            for (; page <= 20; page++) {
+              const typeQuery = type === "page" ? "&type=page" : "";
+              const url = `${GATEWAY_URL}/rest/v1.1/sites/${SITE}/posts/?number=100&page=${page}${typeQuery}&fields=slug,modified,date`;
+              const res = await fetch(url, { headers });
+              if (!res.ok) break;
+              const data: any = await res.json();
+              const batch = (data.posts || []).map((p: any) => ({
+                slug: p.slug,
+                modified: p.modified || p.date,
+                date: p.date,
+              }));
+              out.push(...batch);
+              if (batch.length < 100) break;
+            }
+            return out;
+          }
           try {
-            const [pRes, pgRes] = await Promise.all([
-              fetch(
-                `${GATEWAY_URL}/rest/v1.1/sites/${SITE}/posts/?number=100&fields=slug,modified,date`,
-                { headers },
-              ),
-              fetch(
-                `${GATEWAY_URL}/rest/v1.1/sites/${SITE}/posts/?type=page&number=100&fields=slug,modified,date`,
-                { headers },
-              ),
-            ]);
-            if (pRes.ok) {
-              const data: any = await pRes.json();
-              posts = (data.posts || []).map((p: any) => ({
-                slug: p.slug,
-                modified: p.modified || p.date,
-                date: p.date,
-              }));
-            }
-            if (pgRes.ok) {
-              const data: any = await pgRes.json();
-              pages = (data.posts || []).map((p: any) => ({
-                slug: p.slug,
-                modified: p.modified || p.date,
-                date: p.date,
-              }));
-            }
+            const [p, pg] = await Promise.all([fetchAll("post"), fetchAll("page")]);
+            posts = p;
+            pages = pg;
           } catch (e) {
             console.error("sitemap: failed to fetch", e);
           }
