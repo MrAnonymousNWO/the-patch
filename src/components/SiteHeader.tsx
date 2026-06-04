@@ -75,6 +75,16 @@ export function SiteHeader() {
     };
   }, [open]);
 
+  // Lock body scroll while drawer open so the page underneath cannot show through
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   const renderLink = (link: NavLink, onClick?: () => void, inDrawer = false) => {
     const drawerBase = inDrawer
       ? "block w-full rounded-md px-3 py-2 bg-[hsl(205_85%_96%)] hover:bg-[hsl(205_85%_86%)]"
