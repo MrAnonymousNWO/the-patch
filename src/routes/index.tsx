@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { getPosts } from "@/lib/wordpress.functions";
 import { RssFeeds } from "@/components/RssFeeds";
 import { SocialEmbeds } from "@/components/SocialEmbeds";
+import { ThreadsEmbeds } from "@/components/ThreadsEmbeds";
 import patchLogo from "@/assets/patch-logo.png";
 
 export const Route = createFileRoute("/")({
@@ -544,6 +545,7 @@ function Index() {
           <RssFeeds />
         </div>
         <SocialEmbeds />
+        <ThreadsEmbeds />
       </main>
     </div>
   );
