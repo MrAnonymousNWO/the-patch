@@ -54,16 +54,51 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close on outside click and ESC
+  // Close on outside click + ESC, focus trap, restore focus on close
   useEffect(() => {
     if (!open) return;
+    const prevActive = document.activeElement as HTMLElement | null;
+    const getFocusable = () =>
+      Array.from(
+        drawerRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, textarea',
+        ) ?? [],
+      ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+
+    // Move focus into drawer
+    requestAnimationFrame(() => {
+      const f = getFocusable();
+      (f[0] ?? drawerRef.current)?.focus();
+    });
+
     const onDown = (e: MouseEvent | TouchEvent) => {
       if (drawerRef.current && !drawerRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setOpen(false);
+        return;
+      }
+      if (e.key === "Tab") {
+        const f = getFocusable();
+        if (f.length === 0) {
+          e.preventDefault();
+          return;
+        }
+        const first = f[0];
+        const last = f[f.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+        if (e.shiftKey && (active === first || !drawerRef.current?.contains(active))) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     document.addEventListener("mousedown", onDown);
     document.addEventListener("touchstart", onDown);
@@ -72,16 +107,21 @@ export function SiteHeader() {
       document.removeEventListener("mousedown", onDown);
       document.removeEventListener("touchstart", onDown);
       document.removeEventListener("keydown", onKey);
+      prevActive?.focus?.();
     };
   }, [open]);
 
   // Lock body scroll while drawer open so the page underneath cannot show through
   useEffect(() => {
     if (!open) return;
-    const prev = document.body.style.overflow;
+    const prevOverflow = document.body.style.overflow;
+    const prevPaddingRight = document.body.style.paddingRight;
+    const sbw = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
+    if (sbw > 0) document.body.style.paddingRight = `${sbw}px`;
     return () => {
-      document.body.style.overflow = prev;
+      document.body.style.overflow = prevOverflow;
+      document.body.style.paddingRight = prevPaddingRight;
     };
   }, [open]);
 
