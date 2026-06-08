@@ -182,7 +182,7 @@ export function SiteHeader() {
 
       {/* Left-side drawer (mobile/tablet) */}
       <div
-        className={`fixed inset-0 z-40 lg:hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+        className={`fixed inset-0 z-[100] lg:hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
         aria-hidden={!open}
       >
         <div
