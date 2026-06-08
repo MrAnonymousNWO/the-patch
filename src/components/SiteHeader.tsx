@@ -234,9 +234,12 @@ export function SiteHeader() {
         <aside
           ref={drawerRef}
           id="side-nav"
+          role="dialog"
+          aria-modal="true"
           aria-label="Side navigation"
+          tabIndex={-1}
           style={{ backgroundColor: "hsl(205 85% 92%)" }}
-          className={`absolute left-0 top-0 h-full w-72 max-w-[85vw] overflow-y-auto border-r border-border shadow-2xl transition-transform duration-300 ${
+          className={`absolute left-0 top-0 h-full w-72 max-w-[85vw] overflow-y-auto border-r border-border shadow-2xl transition-transform duration-300 focus:outline-none ${
             open ? "translate-x-0" : "-translate-x-full"
           }`}
         >
