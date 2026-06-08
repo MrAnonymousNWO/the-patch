@@ -133,60 +133,63 @@ export function SiteHeader() {
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 border-b transition-all duration-300 will-change-transform ${
-        hidden && !open ? "-translate-y-full" : "translate-y-0"
-      } ${
-        scrolled
-          ? "border-border/60 bg-[hsl(205_85%_88%)] shadow-[var(--shadow-elegant)]"
-          : "border-transparent bg-[hsl(205_85%_92%)]"
-      }`}
-    >
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls="side-nav"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-[hsl(205_85%_92%)] text-foreground transition-all hover:border-primary hover:text-primary active:scale-95 lg:hidden"
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-          <Link to="/" className="group flex items-center gap-3" onClick={() => setOpen(false)}>
-            <img
-              src={patchLogo}
-              alt="The Patch — declassified seal"
-              className="h-12 w-12 rounded-full object-contain shadow-[var(--shadow-elegant)] transition-transform group-hover:rotate-3 group-hover:scale-105 group-active:scale-95"
-            />
-            <span className="flex flex-col leading-none">
-              <span className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
-                · · · Declassified Dispatches · · ·
+    <>
+      <header
+        className={`sticky top-0 z-50 border-b transition-all duration-300 will-change-transform ${
+          hidden && !open ? "-translate-y-full" : "translate-y-0"
+        } ${
+          scrolled
+            ? "border-border/60 bg-[hsl(205_85%_88%)] shadow-[var(--shadow-elegant)]"
+            : "border-transparent bg-[hsl(205_85%_92%)]"
+        }`}
+      >
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="side-nav"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-[hsl(205_85%_92%)] text-foreground transition-all hover:border-primary hover:text-primary active:scale-95 lg:hidden"
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+            <Link to="/" className="group flex items-center gap-3" onClick={() => setOpen(false)}>
+              <img
+                src={patchLogo}
+                alt="The Patch — declassified seal"
+                className="h-12 w-12 rounded-full object-contain shadow-[var(--shadow-elegant)] transition-transform group-hover:rotate-3 group-hover:scale-105 group-active:scale-95"
+              />
+              <span className="flex flex-col leading-none">
+                <span className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
+                  · · · Declassified Dispatches · · ·
+                </span>
+                <span className="mt-1 font-display text-xl font-bold tracking-tight text-foreground">
+                  The Patch
+                </span>
               </span>
-              <span className="mt-1 font-display text-xl font-bold tracking-tight text-foreground">
-                The Patch
-              </span>
-            </span>
-          </Link>
+            </Link>
+          </div>
+
+          <nav aria-label="Primary" className="hidden lg:block">
+            <ul className="flex flex-wrap items-center gap-6 text-sm font-medium">
+              {navLinks.map((l) => (
+                <li key={l.label}>{renderLink(l)}</li>
+              ))}
+            </ul>
+          </nav>
         </div>
+      </header>
 
-        <nav aria-label="Primary" className="hidden lg:block">
-          <ul className="flex flex-wrap items-center gap-6 text-sm font-medium">
-            {navLinks.map((l) => (
-              <li key={l.label}>{renderLink(l)}</li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
-      {/* Left-side drawer (mobile/tablet) */}
+      {/* Full-screen drawer rendered OUTSIDE the transformed header so it escapes its stacking context */}
       <div
-        className={`fixed inset-0 z-[100] lg:hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+        className={`fixed inset-0 z-[2147483646] lg:hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
         aria-hidden={!open}
       >
         <div
-          className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+          onClick={() => setOpen(false)}
+          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`}
         />
         <aside
           ref={drawerRef}
@@ -225,7 +228,7 @@ export function SiteHeader() {
           </nav>
         </aside>
       </div>
-    </header>
+    </>
   );
 }
 
