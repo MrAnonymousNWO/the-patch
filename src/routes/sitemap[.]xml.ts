@@ -6,8 +6,8 @@ const GATEWAY_URL = "https://connector-gateway.lovable.dev/wordpress_com";
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
-        const origin = new URL(request.url).origin;
+      GET: async () => {
+        const origin = "https://the-patch.lovable.app";
 
         const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
         const WORDPRESS_COM_API_KEY = process.env.WORDPRESS_COM_API_KEY;
@@ -54,6 +54,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           `<url><loc>${origin}/pages</loc><lastmod>${now}</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>`,
           `<url><loc>${origin}/search</loc><lastmod>${now}</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>`,
           `<url><loc>${origin}/feed.xml</loc><lastmod>${now}</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>`,
+          `<url><loc>${origin}/sitemap-index.xml</loc><lastmod>${now}</lastmod><changefreq>daily</changefreq><priority>0.4</priority></url>`,
+          `<url><loc>${origin}/search-index.json</loc><lastmod>${now}</lastmod><changefreq>daily</changefreq><priority>0.3</priority></url>`,
           ...posts.map(
             (p) =>
               `<url><loc>${origin}/blog/${p.slug}</loc><lastmod>${new Date(p.modified).toISOString()}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`,

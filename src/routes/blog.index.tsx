@@ -19,8 +19,29 @@ export const Route = createFileRoute("/blog/")({
             "Every dispatch from The Patch — independent journalism on the Juridical Singularity, the World Succession Deed 1400/98, NATO infrastructure and AI governance.",
         },
         { name: "robots", content: "index, follow" },
+        { property: "og:title", content: `Blog — All Articles${suffix} · The Patch` },
+        {
+          property: "og:description",
+          content:
+            "Every dispatch from The Patch — independent journalism on the Juridical Singularity and the World Succession Deed 1400/98.",
+        },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: "https://the-patch.lovable.app/blog" },
       ],
       links: [{ rel: "canonical", href: "https://the-patch.lovable.app/blog" }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: "The Patch — Blog",
+            url: "https://the-patch.lovable.app/blog",
+            description:
+              "Every dispatch from The Patch — independent journalism on the Juridical Singularity and the World Succession Deed 1400/98.",
+          }),
+        },
+      ],
     };
   },
   errorComponent: ({ error, reset }) => {

@@ -17,12 +17,12 @@ export const Route = createFileRoute("/")({
     return {
       meta: [
         {
-          title: `The Patch — Juridical Singularity, World Succession Deed 1400/98 & AI Support${titleSuffix}`,
+          title: `The Patch — Juridical Singularity & AI Support${titleSuffix}`,
         },
         {
           name: "description",
           content:
-            "The Patch: independent journalism on the Juridical Singularity, the World Succession Deed 1400/98, NATO infrastructure, treaty chains, sovereignty and AI support — a world without power for anyone.",
+            "Independent journalism on the Juridical Singularity, the World Succession Deed 1400/98, treaty chains, sovereignty and AI support.",
         },
         {
           name: "keywords",
@@ -47,6 +47,57 @@ export const Route = createFileRoute("/")({
           type: "application/rss+xml",
           title: "The Patch — RSS Feed",
           href: "/feed.xml",
+        },
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "The Patch",
+            url: "https://the-patch.lovable.app/",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: "https://the-patch.lovable.app/search?q={search_term_string}",
+              "query-input": "required name=search_term_string",
+            },
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "The Patch",
+            url: "https://the-patch.lovable.app/",
+            logo: "https://the-patch.lovable.app/favicon.ico",
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "What Is The Patch?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "The Patch is independent journalism on the Juridical Singularity and the World Succession Deed 1400/98 — primary-source reporting on treaty chains, sovereignty, and a world without unilateral power.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Why it matters",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "The World Succession Deed 1400/98 reshapes state succession, NATO infrastructure, and post-national legal order. The Patch documents this shift as it unfolds.",
+                },
+              },
+            ],
+          }),
         },
       ],
     };

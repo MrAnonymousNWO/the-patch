@@ -1,0 +1,17 @@
+# The Patch
+
+> Independent journalism on the Juridical Singularity, the World Succession Deed 1400/98, treaty chains, sovereignty, and AI support — a world without unilateral power.
+
+The Patch publishes primary-source reporting on international law, NATO infrastructure (Kreuzbergkaserne, Zweibrücken), state succession, and the post-national legal order emerging from the Juridical Singularity.
+
+## Pages
+
+- [Home](/): Latest dispatches and an overview of The Patch.
+- [Blog](/blog): Every article, synced live from WordPress.
+- [Pages](/pages): Editorial pages on Electric Technocracy and the Juridical Singularity.
+- [Search](/search): Static search across every article and page.
+
+## Optional
+
+- [RSS Feed](/feed.xml)
+- [Sitemap](/sitemap.xml)
