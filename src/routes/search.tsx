@@ -107,6 +107,7 @@ function SearchPage() {
             <input
               type="search"
               autoFocus
+              aria-label="Search articles and pages"
               placeholder="Search posts, pages, treaty chains…"
               value={q}
               onChange={(e) => setQ(e.target.value)}
