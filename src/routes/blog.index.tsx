@@ -75,7 +75,7 @@ function BlogIndex() {
         </div>
       </section>
 
-      <main className="mx-auto max-w-6xl px-6 py-12">
+      <section className="mx-auto max-w-6xl px-6 py-12">
         <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post: any) => (
             <li key={post.ID}>
@@ -151,7 +151,7 @@ function BlogIndex() {
             )}
           </div>
         </nav>
-      </main>
+      </section>
     </div>
   );
 }
