@@ -12,8 +12,27 @@ export const Route = createFileRoute("/pages")({
           "Browse all editorial pages from The Patch — primary-source journalism on the Juridical Singularity and the World Succession Deed 1400/98.",
       },
       { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "All Pages — The Patch" },
+      {
+        property: "og:description",
+        content:
+          "Browse all editorial pages from The Patch — primary-source journalism on the Juridical Singularity and the World Succession Deed 1400/98.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://the-patch.lovable.app/pages" },
     ],
     links: [{ rel: "canonical", href: "https://the-patch.lovable.app/pages" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "All Pages — The Patch",
+          url: "https://the-patch.lovable.app/pages",
+        }),
+      },
+    ],
   }),
   errorComponent: ({ error, reset }) => {
     const router = useRouter();
