@@ -19,8 +19,27 @@ export const Route = createFileRoute("/search")({
           "Static search across every article and page on The Patch. The index is regenerated automatically when WordPress content changes.",
       },
       { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "Search — The Patch" },
+      {
+        property: "og:description",
+        content:
+          "Static search across every article and page on The Patch — instant, fully indexed.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://the-patch.lovable.app/search" },
     ],
     links: [{ rel: "canonical", href: "https://the-patch.lovable.app/search" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SearchResultsPage",
+          name: "Search — The Patch",
+          url: "https://the-patch.lovable.app/search",
+        }),
+      },
+    ],
   }),
   component: SearchPage,
 });
