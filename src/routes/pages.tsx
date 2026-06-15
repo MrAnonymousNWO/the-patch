@@ -303,7 +303,7 @@ function PagesIndex() {
       </section>
 
 
-      <main className="mx-auto max-w-5xl px-6 py-12">
+      <section className="mx-auto max-w-5xl px-6 py-12">
         {pages.length === 0 ? (
           <p className="text-muted-foreground">No pages available yet.</p>
         ) : (
@@ -341,7 +341,7 @@ function PagesIndex() {
             ))}
           </ul>
         )}
-      </main>
+      </section>
     </div>
   );
 }

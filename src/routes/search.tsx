@@ -102,7 +102,7 @@ function SearchPage() {
         </div>
       </section>
 
-      <main className="mx-auto max-w-4xl px-6 py-10">
+      <section className="mx-auto max-w-4xl px-6 py-10">
         {error && (
           <p className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
             Could not load search index: {error}
@@ -134,7 +134,7 @@ function SearchPage() {
             </li>
           ))}
         </ul>
-      </main>
+      </section>
     </div>
   );
 }

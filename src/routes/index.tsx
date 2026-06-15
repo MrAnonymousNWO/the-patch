@@ -155,7 +155,7 @@ function Index() {
         </div>
       </section>
 
-      <main className="mx-auto max-w-6xl px-6 py-16">
+      <section className="mx-auto max-w-6xl px-6 py-16">
         <section aria-labelledby="latest-posts" className="scroll-mt-24">
           <div className="mb-8 flex items-end justify-between gap-4">
             <div>
@@ -546,7 +546,7 @@ function Index() {
         </div>
         <SocialEmbeds />
         <ThreadsEmbeds />
-      </main>
+      </section>
     </div>
   );
 }
