@@ -6,8 +6,8 @@ const GATEWAY_URL = "https://connector-gateway.lovable.dev/wordpress_com";
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
-        const origin = new URL(request.url).origin;
+      GET: async () => {
+        const origin = "https://the-patch.lovable.app";
 
         const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
         const WORDPRESS_COM_API_KEY = process.env.WORDPRESS_COM_API_KEY;
