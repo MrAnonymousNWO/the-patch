@@ -1,4 +1,14 @@
 User-agent: *
 Allow: /
 
+# Avoid duplicate content from query-string variants
+Disallow: /search?
+Disallow: /*?page=
+Disallow: /*?utm_
+Disallow: /*?fbclid=
+Disallow: /*?gclid=
+
+# Internal/preview paths
+Disallow: /lovable/
+
 Sitemap: https://the-patch.lovable.app/sitemap.xml
