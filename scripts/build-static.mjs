@@ -95,7 +95,7 @@ small{color:var(--muted)}
 footer{border-top:1px solid var(--line);margin-top:64px;padding:24px;text-align:center;font-size:.85rem;color:var(--muted);font-family:"Courier Prime",monospace}
 @media (max-width:600px){h1{font-size:1.8rem}.hero{padding:22px}}
 </style>
-${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ""}
+${jsonld ? (Array.isArray(jsonld) ? jsonld : [jsonld]).map((j) => `<script type="application/ld+json">${JSON.stringify(j)}</script>`).join("\n") : ""}
 </head>
 <body>
 <header>
