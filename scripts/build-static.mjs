@@ -99,12 +99,46 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
 </head>
 <body>
 <header>
+  <a href="/the-patch/" class="brand">The Patch</a>
   <a href="/the-patch/">Home</a>
   <a href="/the-patch/blog/">Blog</a>
   <a href="/the-patch/pages/">Pages</a>
   <a href="/the-patch/search/">Search</a>
   <a href="https://wiki.technocracy.tech/" target="_blank" rel="noopener">Treaty Law Wiki</a>
 </header>
+<main>${body}</main>
+<footer>© ${new Date().getFullYear()} The Patch — Generated ${new Date().toISOString()}</footer>
+</body>
+</html>`;
+}
+
+function articleBody(p) {
+  return `
+<article>
+  <h1>${esc(strip(p.title))}</h1>
+  <p><small>${esc(new Date(p.date).toDateString())}${p.author?.name ? ` · ${esc(p.author.name)}` : ""}</small></p>
+  ${p.featured_image ? `<img src="${esc(p.featured_image)}" alt="${esc(strip(p.title))}" loading="lazy" />` : ""}
+  <div>${p.content || ""}</div>
+</article>`;
+}
+
+function richList(title, items, base) {
+  return `<h1>${esc(title)}</h1><ul class="card-list">${items
+    .map((p) => {
+      const excerpt = strip(p.excerpt).slice(0, 180);
+      const date = p.date ? new Date(p.date).toDateString() : "";
+      return `<li>${
+        p.featured_image ? `<img class="thumb" src="${esc(p.featured_image)}" alt="" loading="lazy" />` : ""
+      }<a href="${base}/${p.slug}/">${esc(strip(p.title))}</a>${
+        date ? `<span class="meta">${esc(date)}</span>` : ""
+      }${excerpt ? `<p class="excerpt">${esc(excerpt)}</p>` : ""}</li>`;
+    })
+    .join("")}</ul>`;
+}
+
+function listBody(title, items, base) {
+  return richList(title, items, base);
+}
 <main>${body}</main>
 <footer>© ${new Date().getFullYear()} The Patch — Generated ${new Date().toISOString()}</footer>
 </body>
