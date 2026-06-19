@@ -177,12 +177,34 @@ async function main() {
     kw: "Juridical Singularity, Electric Technocracy, World Succession Deed 1400/98, The Patch, treaty chain",
     url: `${SITE_URL}/`,
     body: `
-      <h1>The Patch</h1>
-      <p>Independent journalism on the Juridical Singularity and a world beyond unilateral power.</p>
+      <section class="hero">
+        <h1>The Patch</h1>
+        <p>Independent journalism on the Juridical Singularity and a world beyond unilateral power.</p>
+      </section>
       <h2>Latest articles</h2>
-      <ul>${posts.slice(0, 30).map((p) => `<li><a href="/the-patch/blog/${p.slug}/">${esc(strip(p.title))}</a></li>`).join("")}</ul>
+      ${richList("", posts.slice(0, 12), "/the-patch/blog")}
       <h2>Pages</h2>
-      <ul>${pages.map((p) => `<li><a href="/the-patch/pages/${p.slug}/">${esc(strip(p.title))}</a></li>`).join("")}</ul>`,
+      ${richList("", pages, "/the-patch/pages")}`,
+    jsonld: [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "The Patch",
+        url: `${SITE_URL}/`,
+        description: "Independent journalism on the Juridical Singularity and post-national legal civilization.",
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${SITE_URL}/search/?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "The Patch",
+        url: `${SITE_URL}/`,
+      },
+    ],
   }));
 
   // /pages index
@@ -192,6 +214,13 @@ async function main() {
     kw: "The Patch, pages, Juridical Singularity",
     url: `${SITE_URL}/pages/`,
     body: listBody("Pages", pages, "/the-patch/pages"),
+    jsonld: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Pages — The Patch",
+      url: `${SITE_URL}/pages/`,
+      description: "Editorial dossiers from The Patch.",
+    },
   }));
 
   // /blog index
@@ -201,7 +230,15 @@ async function main() {
     kw: "The Patch, blog, articles",
     url: `${SITE_URL}/blog/`,
     body: listBody("Blog — All Articles", posts, "/the-patch/blog"),
+    jsonld: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Blog — All Articles · The Patch",
+      url: `${SITE_URL}/blog/`,
+      description: "Every dispatch from The Patch.",
+    },
   }));
+
 
   // /search (static client-side search over search-index.json)
   await writePage("search", layout({
