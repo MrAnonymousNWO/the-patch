@@ -36,6 +36,8 @@ jobs:
           node-version: "20"
       - name: Build static site from WordPress
         run: node scripts/build-static.mjs
+      - name: Validate JSON-LD (home, blog index, blog posts)
+        run: node scripts/validate-jsonld.mjs
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
