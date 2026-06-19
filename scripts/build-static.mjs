@@ -139,27 +139,6 @@ function richList(title, items, base) {
 function listBody(title, items, base) {
   return richList(title, items, base);
 }
-<main>${body}</main>
-<footer>© ${new Date().getFullYear()} The Patch — Generated ${new Date().toISOString()}</footer>
-</body>
-</html>`;
-}
-
-function articleBody(p) {
-  return `
-<article>
-  <h1>${esc(strip(p.title))}</h1>
-  <p><small>${esc(new Date(p.date).toDateString())}${p.author?.name ? ` · ${esc(p.author.name)}` : ""}</small></p>
-  ${p.featured_image ? `<img src="${esc(p.featured_image)}" alt="${esc(strip(p.title))}" />` : ""}
-  <div>${p.content || ""}</div>
-</article>`;
-}
-
-function listBody(title, items, base) {
-  return `<h1>${esc(title)}</h1><ul>${items
-    .map((p) => `<li><a href="${base}/${p.slug}/">${esc(strip(p.title))}</a></li>`)
-    .join("")}</ul>`;
-}
 
 async function writePage(path, html) {
   const dir = join(OUT, path);
