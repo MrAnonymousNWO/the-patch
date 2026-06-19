@@ -66,21 +66,40 @@ function layout({ title, description, kw, url, image, body, jsonld }) {
 <meta property="og:url" content="${esc(url)}" />
 <meta property="og:type" content="article" />
 ${image ? `<meta property="og:image" content="${esc(image)}" />` : ""}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" />
 <style>
-:root{--bg:#cfe6f5;--ink:#0f1b2a;--accent:#1d3557}
-body{margin:0;font-family:"Courier Prime",ui-monospace,monospace;background:var(--bg);color:var(--ink)}
-header{background:#bcdcef;border-bottom:1px solid #88b8d8;position:sticky;top:0;padding:14px 24px}
-header a{color:var(--accent);text-decoration:none;margin-right:18px;font-weight:700}
-main{max-width:760px;margin:0 auto;padding:32px 24px}
-img{max-width:100%;height:auto}
-h1{font-family:"Special Elite",serif;font-size:2.1rem;line-height:1.15}
+:root{--bg:#cfe6f5;--surface:#e6f1f9;--ink:#0f1b2a;--muted:#456079;--accent:#1d3557;--line:#88b8d8}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Source Serif 4",Georgia,serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header{background:rgba(188,220,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;padding:14px 24px;display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+header a{color:var(--accent);text-decoration:none;font-weight:700;font-family:"Courier Prime",ui-monospace,monospace;font-size:.95rem;letter-spacing:.02em}
+header a:hover{text-decoration:underline}
+header .brand{font-family:"Special Elite",serif;font-size:1.15rem;margin-right:auto}
+main{max-width:780px;margin:0 auto;padding:40px 24px}
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:32px;margin-bottom:32px}
+img{max-width:100%;height:auto;border-radius:8px}
+article img{margin:18px 0}
+h1{font-family:"Special Elite",serif;font-size:2.4rem;line-height:1.15;margin:0 0 .4em}
+h2{font-family:"Special Elite",serif;font-size:1.5rem;margin-top:2em}
 a{color:var(--accent)}
-footer{border-top:1px solid #88b8d8;margin-top:48px;padding:24px;text-align:center;font-size:.85rem;color:#456}
+.card-list{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.card-list li{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;transition:transform .15s,box-shadow .15s}
+.card-list li:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(29,53,87,.12)}
+.card-list a{font-weight:700;text-decoration:none;font-size:1.05rem}
+.card-list .meta{display:block;font-family:"Courier Prime",monospace;font-size:.78rem;color:var(--muted);margin-top:4px;letter-spacing:.04em;text-transform:uppercase}
+.card-list .excerpt{margin:8px 0 0;color:var(--muted);font-size:.95rem}
+.card-list .thumb{display:block;width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:10px}
+small{color:var(--muted)}
+footer{border-top:1px solid var(--line);margin-top:64px;padding:24px;text-align:center;font-size:.85rem;color:var(--muted);font-family:"Courier Prime",monospace}
+@media (max-width:600px){h1{font-size:1.8rem}.hero{padding:22px}}
 </style>
-${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ""}
+${jsonld ? (Array.isArray(jsonld) ? jsonld : [jsonld]).map((j) => `<script type="application/ld+json">${JSON.stringify(j)}</script>`).join("\n") : ""}
 </head>
 <body>
 <header>
+  <a href="/the-patch/" class="brand">The Patch</a>
   <a href="/the-patch/">Home</a>
   <a href="/the-patch/blog/">Blog</a>
   <a href="/the-patch/pages/">Pages</a>
@@ -98,15 +117,27 @@ function articleBody(p) {
 <article>
   <h1>${esc(strip(p.title))}</h1>
   <p><small>${esc(new Date(p.date).toDateString())}${p.author?.name ? ` · ${esc(p.author.name)}` : ""}</small></p>
-  ${p.featured_image ? `<img src="${esc(p.featured_image)}" alt="${esc(strip(p.title))}" />` : ""}
+  ${p.featured_image ? `<img src="${esc(p.featured_image)}" alt="${esc(strip(p.title))}" loading="lazy" />` : ""}
   <div>${p.content || ""}</div>
 </article>`;
 }
 
-function listBody(title, items, base) {
-  return `<h1>${esc(title)}</h1><ul>${items
-    .map((p) => `<li><a href="${base}/${p.slug}/">${esc(strip(p.title))}</a></li>`)
+function richList(title, items, base) {
+  return `<h1>${esc(title)}</h1><ul class="card-list">${items
+    .map((p) => {
+      const excerpt = strip(p.excerpt).slice(0, 180);
+      const date = p.date ? new Date(p.date).toDateString() : "";
+      return `<li>${
+        p.featured_image ? `<img class="thumb" src="${esc(p.featured_image)}" alt="" loading="lazy" />` : ""
+      }<a href="${base}/${p.slug}/">${esc(strip(p.title))}</a>${
+        date ? `<span class="meta">${esc(date)}</span>` : ""
+      }${excerpt ? `<p class="excerpt">${esc(excerpt)}</p>` : ""}</li>`;
+    })
     .join("")}</ul>`;
+}
+
+function listBody(title, items, base) {
+  return richList(title, items, base);
 }
 
 async function writePage(path, html) {
@@ -146,12 +177,34 @@ async function main() {
     kw: "Juridical Singularity, Electric Technocracy, World Succession Deed 1400/98, The Patch, treaty chain",
     url: `${SITE_URL}/`,
     body: `
-      <h1>The Patch</h1>
-      <p>Independent journalism on the Juridical Singularity and a world beyond unilateral power.</p>
+      <section class="hero">
+        <h1>The Patch</h1>
+        <p>Independent journalism on the Juridical Singularity and a world beyond unilateral power.</p>
+      </section>
       <h2>Latest articles</h2>
-      <ul>${posts.slice(0, 30).map((p) => `<li><a href="/the-patch/blog/${p.slug}/">${esc(strip(p.title))}</a></li>`).join("")}</ul>
+      ${richList("", posts.slice(0, 12), "/the-patch/blog")}
       <h2>Pages</h2>
-      <ul>${pages.map((p) => `<li><a href="/the-patch/pages/${p.slug}/">${esc(strip(p.title))}</a></li>`).join("")}</ul>`,
+      ${richList("", pages, "/the-patch/pages")}`,
+    jsonld: [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "The Patch",
+        url: `${SITE_URL}/`,
+        description: "Independent journalism on the Juridical Singularity and post-national legal civilization.",
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${SITE_URL}/search/?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "The Patch",
+        url: `${SITE_URL}/`,
+      },
+    ],
   }));
 
   // /pages index
@@ -161,6 +214,13 @@ async function main() {
     kw: "The Patch, pages, Juridical Singularity",
     url: `${SITE_URL}/pages/`,
     body: listBody("Pages", pages, "/the-patch/pages"),
+    jsonld: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Pages — The Patch",
+      url: `${SITE_URL}/pages/`,
+      description: "Editorial dossiers from The Patch.",
+    },
   }));
 
   // /blog index
@@ -170,7 +230,15 @@ async function main() {
     kw: "The Patch, blog, articles",
     url: `${SITE_URL}/blog/`,
     body: listBody("Blog — All Articles", posts, "/the-patch/blog"),
+    jsonld: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Blog — All Articles · The Patch",
+      url: `${SITE_URL}/blog/`,
+      description: "Every dispatch from The Patch.",
+    },
   }));
+
 
   // /search (static client-side search over search-index.json)
   await writePage("search", layout({

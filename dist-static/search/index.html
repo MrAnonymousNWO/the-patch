@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Search — The Patch</title>
+<meta name="description" content="Static search across every article and page on The Patch." />
+<meta name="keywords" content="The Patch, search, index" />
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+<meta name="google-site-verification" content="POS6A_n9nSGi6W4cWi-49r84-3ML8vTuLRBZQX-OFBc" />
+<meta name="google-site-verification" content="bL0Q0TMItHr_gRP_a2on4EXDhl5UO2VaOsbH0pSmEqU" />
+<link rel="canonical" href="https://mranonymousnwo.github.io/the-patch/search/" />
+<meta property="og:title" content="Search — The Patch" />
+<meta property="og:description" content="Static search across every article and page on The Patch." />
+<meta property="og:url" content="https://mranonymousnwo.github.io/the-patch/search/" />
+<meta property="og:type" content="article" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" />
+<style>
+:root{--bg:#cfe6f5;--surface:#e6f1f9;--ink:#0f1b2a;--muted:#456079;--accent:#1d3557;--line:#88b8d8}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Source Serif 4",Georgia,serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header{background:rgba(188,220,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;padding:14px 24px;display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+header a{color:var(--accent);text-decoration:none;font-weight:700;font-family:"Courier Prime",ui-monospace,monospace;font-size:.95rem;letter-spacing:.02em}
+header a:hover{text-decoration:underline}
+header .brand{font-family:"Special Elite",serif;font-size:1.15rem;margin-right:auto}
+main{max-width:780px;margin:0 auto;padding:40px 24px}
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:32px;margin-bottom:32px}
+img{max-width:100%;height:auto;border-radius:8px}
+article img{margin:18px 0}
+h1{font-family:"Special Elite",serif;font-size:2.4rem;line-height:1.15;margin:0 0 .4em}
+h2{font-family:"Special Elite",serif;font-size:1.5rem;margin-top:2em}
+a{color:var(--accent)}
+.card-list{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.card-list li{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;transition:transform .15s,box-shadow .15s}
+.card-list li:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(29,53,87,.12)}
+.card-list a{font-weight:700;text-decoration:none;font-size:1.05rem}
+.card-list .meta{display:block;font-family:"Courier Prime",monospace;font-size:.78rem;color:var(--muted);margin-top:4px;letter-spacing:.04em;text-transform:uppercase}
+.card-list .excerpt{margin:8px 0 0;color:var(--muted);font-size:.95rem}
+.card-list .thumb{display:block;width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:10px}
+small{color:var(--muted)}
+footer{border-top:1px solid var(--line);margin-top:64px;padding:24px;text-align:center;font-size:.85rem;color:var(--muted);font-family:"Courier Prime",monospace}
+@media (max-width:600px){h1{font-size:1.8rem}.hero{padding:22px}}
+</style>
+
+</head>
+<body>
+<header>
+  <a href="/the-patch/" class="brand">The Patch</a>
+  <a href="/the-patch/">Home</a>
+  <a href="/the-patch/blog/">Blog</a>
+  <a href="/the-patch/pages/">Pages</a>
+  <a href="/the-patch/search/">Search</a>
+  <a href="https://wiki.technocracy.tech/" target="_blank" rel="noopener">Treaty Law Wiki</a>
+</header>
+<main>
+      <h1>Search</h1>
+      <input id="q" type="search" placeholder="Search…" style="width:100%;padding:14px;font-size:1rem;border:2px solid #88b8d8;border-radius:8px;background:#fff" />
+      <ul id="r" style="list-style:none;padding:0;margin-top:16px"></ul>
+      <script>
+        (async () => {
+          const res = await fetch('/the-patch/search-index.json');
+          const { entries = [] } = await res.json();
+          const r = document.getElementById('r');
+          const q = document.getElementById('q');
+          function render(list){
+            r.innerHTML = list.slice(0,80).map(e =>
+              '<li style="margin:8px 0;padding:12px;border:1px solid #88b8d8;border-radius:8px;background:#fff">' +
+              '<small style="text-transform:uppercase;letter-spacing:.15em;color:#456">' + e.type + '</small><br>' +
+              '<a href="/the-patch/' + (e.type==='post'?'blog':'pages') + '/' + e.slug + '/" style="font-weight:700">' + e.title + '</a>' +
+              (e.excerpt? '<p style="margin:6px 0 0;color:#456">'+e.excerpt+'</p>':'') +
+              '</li>').join('');
+          }
+          render(entries);
+          q.addEventListener('input', () => {
+            const n = q.value.trim().toLowerCase();
+            if(!n) return render(entries);
+            render(entries.filter(e => (e.title+' '+e.excerpt).toLowerCase().includes(n)));
+          });
+        })();
+      </script></main>
+<footer>© 2026 The Patch — Generated 2026-06-19T20:23:52.677Z</footer>
+</body>
+</html>

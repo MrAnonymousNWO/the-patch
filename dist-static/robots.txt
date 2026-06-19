@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mranonymousnwo.github.io/the-patch/sitemap.xml
