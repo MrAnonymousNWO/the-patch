@@ -2,7 +2,7 @@ name: Trigger build on WordPress update
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # check every 10 minutes
+    - cron: "*/5 * * * *"   # poll WordPress every 5 minutes
   workflow_dispatch:
 
 permissions:
