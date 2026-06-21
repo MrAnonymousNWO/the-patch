@@ -1,16 +1,11 @@
 name: Static export & deploy to GitHub Pages
 
 on:
-  # Run on every push to main
   push:
     branches: [main]
-  # Allow manual runs from the Actions tab
   workflow_dispatch:
-  # Rebuild every 30 minutes so WordPress edits propagate automatically
   schedule:
     - cron: "*/30 * * * *"
-  # Optional: trigger from external systems (e.g. a WordPress webhook hitting
-  # the GitHub repository_dispatch API).
   repository_dispatch:
     types: [wordpress-updated]
 
@@ -34,10 +29,30 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+
       - name: Build static site from WordPress
         run: node scripts/build-static.mjs
-      - name: Validate JSON-LD (home, blog index, blog posts)
+
+      - name: Validate JSON-LD (build output)
+        id: validate
         run: node scripts/validate-jsonld.mjs
+        continue-on-error: true
+
+      - name: Upload JSON-LD report (build)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jsonld-report-build
+          path: |
+            dist-static/jsonld-report.json
+            dist-static/jsonld-report.html
+
+      - name: Fail build if JSON-LD validation failed
+        if: steps.validate.outcome == 'failure'
+        run: |
+          echo "::error::JSON-LD validation failed. See uploaded jsonld-report-build artifact."
+          exit 1
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -49,6 +64,46 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  postdeploy-crawl:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Wait for deployment to be reachable
+        run: |
+          URL="${{ needs.deploy.outputs.page_url }}"
+          for i in 1 2 3 4 5 6; do
+            if curl -sfI "$URL" >/dev/null; then echo "live: $URL"; break; fi
+            echo "waiting for $URL (attempt $i)..."
+            sleep 10
+          done
+
+      - name: Re-validate JSON-LD against live site
+        id: crawl
+        run: node scripts/validate-jsonld.mjs --crawl "${{ needs.deploy.outputs.page_url }}" --sample 5
+        continue-on-error: true
+
+      - name: Upload JSON-LD report (live crawl)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jsonld-report-live
+          path: |
+            jsonld-report.json
+            jsonld-report.html
+
+      - name: Fail job if live JSON-LD validation failed
+        if: steps.crawl.outcome == 'failure'
+        run: |
+          echo "::error::Live JSON-LD validation failed. See uploaded jsonld-report-live artifact."
+          exit 1
