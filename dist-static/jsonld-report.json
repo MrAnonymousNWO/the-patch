@@ -1,0 +1,244 @@
+{
+  "mode": "local",
+  "target": "dist-static",
+  "timestamp": "2026-06-21T15:07:24.654Z",
+  "checked": [
+    "dist-static/index.html",
+    "dist-static/blog/index.html",
+    "dist-static/pages/index.html",
+    "dist-static/blog/1400_world_succession_deed_global_jurisdiction/index.html",
+    "dist-static/blog/architecture-of-an-ending-international-law/index.html",
+    "dist-static/blog/architecture-of-international-law/index.html",
+    "dist-static/blog/autobiographical_graphic_novel_global-epic_fail/index.html",
+    "dist-static/blog/can-universal-consent-legally-abolish-jus-cogens/index.html",
+    "dist-static/blog/chain_reaction_of_worldwide_territorial_expansion/index.html",
+    "dist-static/blog/digital_wildfire/index.html",
+    "dist-static/blog/direct_digital_democracy/index.html",
+    "dist-static/blog/electric_technocracy_chatgpt/index.html",
+    "dist-static/blog/electric_technocracy_movement_headquarters/index.html",
+    "dist-static/blog/end_of_the_political_class/index.html",
+    "dist-static/blog/free_course_treaty-chains/index.html",
+    "dist-static/blog/global_power_grids/index.html",
+    "dist-static/blog/guardian_at_the_gate/index.html",
+    "dist-static/blog/how_deed_1400_terminated_the_age_of_nations/index.html",
+    "dist-static/blog/infrastructure_as_a_vector_of_sovereignty/index.html",
+    "dist-static/blog/juridical-singularity/index.html",
+    "dist-static/blog/kreuzberg_singularity/index.html",
+    "dist-static/blog/legal_expert_opinion/index.html",
+    "dist-static/blog/legal_opinion/index.html",
+    "dist-static/blog/liquidation_of_human_power/index.html",
+    "dist-static/blog/meaning_is_the_new_currency/index.html",
+    "dist-static/blog/nato_barracks_domino/index.html",
+    "dist-static/blog/notary_custodian/index.html",
+    "dist-static/blog/self-abolition-of-international-law/index.html",
+    "dist-static/blog/strategic_governance_concept/index.html",
+    "dist-static/blog/submarine_cables/index.html",
+    "dist-static/blog/terminology_guide/index.html",
+    "dist-static/blog/terminology_guide-2/index.html",
+    "dist-static/blog/the-dawn-of-electric-technocracy/index.html",
+    "dist-static/blog/the-juridical-singularity/index.html",
+    "dist-static/blog/the-juridical-singularity-and-the-world-succession-deed-1400-98/index.html",
+    "dist-static/blog/the-ultimate-hacker-music-playlist/index.html",
+    "dist-static/blog/the_end_of_territorial_borders/index.html",
+    "dist-static/blog/the_juridical_singularity/index.html",
+    "dist-static/blog/the_strategic_nexus_for_global_network_capture/index.html",
+    "dist-static/blog/treaty-chain/index.html",
+    "dist-static/blog/understanding-the-world-succession-deed-1400-98/index.html",
+    "dist-static/blog/welcome_to_electric_technocracy/index.html",
+    "dist-static/blog/who-controls-proof-when-treaty-bodies-courts-custodial-institutions-collapse/index.html",
+    "dist-static/blog/why-international-law-has-no-absolute-limits/index.html",
+    "dist-static/blog/world-succession-deed-1400-98/index.html"
+  ],
+  "passes": [
+    {
+      "file": "dist-static/index.html",
+      "type": "WebSite"
+    },
+    {
+      "file": "dist-static/index.html",
+      "type": "Organization"
+    },
+    {
+      "file": "dist-static/blog/index.html",
+      "type": "CollectionPage"
+    },
+    {
+      "file": "dist-static/pages/index.html",
+      "type": "CollectionPage"
+    },
+    {
+      "file": "dist-static/blog/1400_world_succession_deed_global_jurisdiction/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/architecture-of-an-ending-international-law/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/architecture-of-international-law/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/autobiographical_graphic_novel_global-epic_fail/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/can-universal-consent-legally-abolish-jus-cogens/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/chain_reaction_of_worldwide_territorial_expansion/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/digital_wildfire/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/direct_digital_democracy/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/electric_technocracy_chatgpt/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/electric_technocracy_movement_headquarters/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/end_of_the_political_class/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/free_course_treaty-chains/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/global_power_grids/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/guardian_at_the_gate/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/how_deed_1400_terminated_the_age_of_nations/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/infrastructure_as_a_vector_of_sovereignty/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/juridical-singularity/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/kreuzberg_singularity/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/legal_expert_opinion/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/legal_opinion/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/liquidation_of_human_power/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/meaning_is_the_new_currency/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/nato_barracks_domino/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/notary_custodian/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/self-abolition-of-international-law/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/strategic_governance_concept/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/submarine_cables/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/terminology_guide/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/terminology_guide-2/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/the-dawn-of-electric-technocracy/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/the-juridical-singularity/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/the-juridical-singularity-and-the-world-succession-deed-1400-98/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/the-ultimate-hacker-music-playlist/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/the_end_of_territorial_borders/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/the_juridical_singularity/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/the_strategic_nexus_for_global_network_capture/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/treaty-chain/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/understanding-the-world-succession-deed-1400-98/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/welcome_to_electric_technocracy/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/who-controls-proof-when-treaty-bodies-courts-custodial-institutions-collapse/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/why-international-law-has-no-absolute-limits/index.html",
+      "type": "Article"
+    },
+    {
+      "file": "dist-static/blog/world-succession-deed-1400-98/index.html",
+      "type": "Article"
+    }
+  ],
+  "failures": [],
+  "totals": {
+    "checked": 45,
+    "passes": 46,
+    "failures": 0
+  }
+}
