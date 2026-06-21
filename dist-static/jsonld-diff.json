@@ -1,0 +1,642 @@
+{
+  "previous_timestamp": "2026-06-21T15:07:24.654Z",
+  "current_timestamp": "2026-06-21T15:12:49.333Z",
+  "totals": {
+    "added": 45,
+    "removed": 0,
+    "changed": 0
+  },
+  "changes": [
+    {
+      "file": "dist-static/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "WebSite",
+          "Organization"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "CollectionPage"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/pages/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "CollectionPage"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/1400_world_succession_deed_global_jurisdiction/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/architecture-of-an-ending-international-law/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/architecture-of-international-law/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/autobiographical_graphic_novel_global-epic_fail/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/can-universal-consent-legally-abolish-jus-cogens/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/chain_reaction_of_worldwide_territorial_expansion/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/digital_wildfire/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/direct_digital_democracy/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/electric_technocracy_chatgpt/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/electric_technocracy_movement_headquarters/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/end_of_the_political_class/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/free_course_treaty-chains/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/global_power_grids/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/guardian_at_the_gate/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/how_deed_1400_terminated_the_age_of_nations/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/infrastructure_as_a_vector_of_sovereignty/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/juridical-singularity/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/kreuzberg_singularity/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/legal_expert_opinion/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/legal_opinion/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/liquidation_of_human_power/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/meaning_is_the_new_currency/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/nato_barracks_domino/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/notary_custodian/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/self-abolition-of-international-law/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/strategic_governance_concept/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/submarine_cables/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/terminology_guide/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/terminology_guide-2/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/the-dawn-of-electric-technocracy/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/the-juridical-singularity/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/the-juridical-singularity-and-the-world-succession-deed-1400-98/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/the-ultimate-hacker-music-playlist/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/the_end_of_territorial_borders/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/the_juridical_singularity/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/the_strategic_nexus_for_global_network_capture/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/treaty-chain/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/understanding-the-world-succession-deed-1400-98/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/welcome_to_electric_technocracy/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/who-controls-proof-when-treaty-bodies-courts-custodial-institutions-collapse/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/why-international-law-has-no-absolute-limits/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    },
+    {
+      "file": "dist-static/blog/world-succession-deed-1400-98/index.html",
+      "kind": "added",
+      "previous": {
+        "types": [],
+        "findings": []
+      },
+      "current": {
+        "types": [
+          "Article"
+        ],
+        "findings": []
+      }
+    }
+  ]
+}
