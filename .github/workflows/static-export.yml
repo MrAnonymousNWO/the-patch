@@ -13,6 +13,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: "pages"
@@ -33,9 +34,26 @@ jobs:
       - name: Build static site from WordPress
         run: node scripts/build-static.mjs
 
-      - name: Validate JSON-LD (build output)
+      - name: Download previous JSON-LD report (for diff)
+        id: prev
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: static-export.yml
+          name: jsonld-report-build
+          path: prev-report
+          if_no_artifact_found: warn
+          search_artifacts: true
+        continue-on-error: true
+
+      - name: Validate JSON-LD (build output) + diff
         id: validate
-        run: node scripts/validate-jsonld.mjs
+        run: |
+          if [ -f prev-report/jsonld-report.json ]; then
+            node scripts/validate-jsonld.mjs --diff prev-report/jsonld-report.json
+          else
+            echo "No previous report found; skipping diff."
+            node scripts/validate-jsonld.mjs
+          fi
         continue-on-error: true
 
       - name: Upload JSON-LD report (build)
@@ -46,11 +64,20 @@ jobs:
           path: |
             dist-static/jsonld-report.json
             dist-static/jsonld-report.html
+            dist-static/jsonld-diff.json
+            dist-static/jsonld-diff.md
 
-      - name: Fail build if JSON-LD validation failed
+      - name: Surface JSON-LD diff in run summary
+        if: always()
+        run: |
+          if [ -f dist-static/jsonld-diff.md ]; then
+            cat dist-static/jsonld-diff.md >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Fail build only on CRITICAL JSON-LD findings
         if: steps.validate.outcome == 'failure'
         run: |
-          echo "::error::JSON-LD validation failed. See uploaded jsonld-report-build artifact."
+          echo "::error::Critical JSON-LD findings in build output. See artifact jsonld-report-build."
           exit 1
 
       - name: Upload Pages artifact
@@ -88,7 +115,7 @@ jobs:
             sleep 10
           done
 
-      - name: Re-validate JSON-LD against live site
+      - name: Re-validate JSON-LD against live site (critical-only gate)
         id: crawl
         run: node scripts/validate-jsonld.mjs --crawl "${{ needs.deploy.outputs.page_url }}" --sample 5
         continue-on-error: true
@@ -102,8 +129,8 @@ jobs:
             jsonld-report.json
             jsonld-report.html
 
-      - name: Fail job if live JSON-LD validation failed
+      - name: Fail post-deploy only on CRITICAL findings
         if: steps.crawl.outcome == 'failure'
         run: |
-          echo "::error::Live JSON-LD validation failed. See uploaded jsonld-report-live artifact."
+          echo "::error::Critical JSON-LD findings on live site. See artifact jsonld-report-live."
           exit 1
