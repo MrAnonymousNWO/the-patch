@@ -39,9 +39,11 @@ const arg = (k) => {
 const has = (k) => args.includes(k);
 
 const CRAWL_URL = arg("--crawl")?.replace(/\/$/, "") || null;
-const SAMPLE = parseInt(arg("--sample") || "5", 10);
+const SAMPLE = parseInt(arg("--sample") || process.env.CRAWL_SAMPLE_SIZE || "5", 10);
 const STRICT = has("--strict");
 const DIFF_PREV = arg("--diff");
+// Regression gate: fail only when a page's critical count INCREASED vs prev.
+const REGRESSION_ONLY = has("--regression-gate");
 
 const ROOT = "dist-static";
 const OUT = CRAWL_URL ? "." : ROOT;
