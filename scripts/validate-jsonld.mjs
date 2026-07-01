@@ -336,6 +336,37 @@ async function main() {
     const icon = f.severity === "critical" ? "✗" : "⚠";
     console.log(`  ${icon} [${f.severity}] ${f.file} — ${f.reason}`);
   }
+
+  // Regression-gate mode: fail only when a page's critical count INCREASED vs prev.
+  if (REGRESSION_ONLY) {
+    let prev = null;
+    if (DIFF_PREV) {
+      try { prev = JSON.parse(await readFile(DIFF_PREV, "utf8")); } catch {}
+    }
+    const criticalsByFile = (rep) => {
+      const m = new Map();
+      for (const f of rep?.findings || []) {
+        if (f.severity !== "critical") continue;
+        m.set(f.file, (m.get(f.file) || 0) + 1);
+      }
+      return m;
+    };
+    const prevMap = criticalsByFile(prev);
+    const curMap = criticalsByFile(summary);
+    const regressions = [];
+    for (const [file, count] of curMap) {
+      const before = prevMap.get(file) || 0;
+      if (count > before) regressions.push({ file, before, after: count });
+    }
+    if (regressions.length) {
+      console.log(`\nREGRESSION — ${regressions.length} page(s) with more critical JSON-LD violations than previous run:`);
+      for (const r of regressions) console.log(`  ✗ ${r.file}: ${r.before} → ${r.after}`);
+      process.exit(1);
+    }
+    console.log(`\nPASS (regression gate) — no page increased its critical-violation count.`);
+    return;
+  }
+
   const fail = critical > 0 || (STRICT && warning > 0);
   if (fail) {
     console.log(`\nFAIL — ${critical} critical${STRICT ? `, ${warning} warning (strict)` : ""}`);
