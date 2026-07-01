@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      crawl_sample_size:
+        description: "How many pages the post-deploy crawler should validate"
+        required: false
+        default: "10"
   schedule:
     - cron: "*/30 * * * *"
   repository_dispatch:
@@ -34,8 +39,8 @@ jobs:
       - name: Build static site from WordPress
         run: node scripts/build-static.mjs
 
-      - name: Download previous JSON-LD report (for diff)
-        id: prev
+      # ---- Fetch previous artifacts for diffing ----
+      - name: Download previous JSON-LD report (build)
         uses: dawidd6/action-download-artifact@v6
         with:
           workflow: static-export.yml
@@ -45,6 +50,17 @@ jobs:
           search_artifacts: true
         continue-on-error: true
 
+      - name: Download previous site-build (for sitemap/canonical diff)
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: static-export.yml
+          name: site-build
+          path: prev-site
+          if_no_artifact_found: warn
+          search_artifacts: true
+        continue-on-error: true
+
+      # ---- Diff steps (report-only, never fail build) ----
       - name: Validate JSON-LD (build output) + diff
         id: validate
         run: |
@@ -56,6 +72,19 @@ jobs:
           fi
         continue-on-error: true
 
+      - name: Sitemap diff
+        run: node scripts/diff-sitemap.mjs prev-site/sitemap.xml dist-static/sitemap.xml dist-static
+        continue-on-error: true
+
+      - name: Canonical & og:url diff
+        run: node scripts/diff-canonicals.mjs prev-site dist-static dist-static
+        continue-on-error: true
+
+      - name: Publish diff report page (dist-static/diff/)
+        run: node scripts/build-diff-page.mjs
+        continue-on-error: true
+
+      # ---- Artifact uploads ----
       - name: Upload JSON-LD report (build)
         if: always()
         uses: actions/upload-artifact@v4
@@ -67,12 +96,23 @@ jobs:
             dist-static/jsonld-diff.json
             dist-static/jsonld-diff.md
 
-      - name: Surface JSON-LD diff in run summary
+      - name: Upload site build (for next-run diffs)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          retention-days: 14
+          path: dist-static
+
+      # ---- Run summary ----
+      - name: Surface diffs in run summary
         if: always()
         run: |
-          if [ -f dist-static/jsonld-diff.md ]; then
-            cat dist-static/jsonld-diff.md >> $GITHUB_STEP_SUMMARY
-          fi
+          {
+            for f in dist-static/jsonld-diff.md dist-static/sitemap-diff.md dist-static/canonical-diff.md; do
+              if [ -f "$f" ]; then echo; echo "---"; echo; cat "$f"; fi
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Fail build only on CRITICAL JSON-LD findings
         if: steps.validate.outcome == 'failure'
@@ -100,6 +140,8 @@ jobs:
   postdeploy-crawl:
     needs: deploy
     runs-on: ubuntu-latest
+    env:
+      CRAWL_SAMPLE_SIZE: ${{ github.event.inputs.crawl_sample_size || '10' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -115,9 +157,31 @@ jobs:
             sleep 10
           done
 
-      - name: Re-validate JSON-LD against live site (critical-only gate)
+      - name: Download previous live JSON-LD report (for regression gate)
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: static-export.yml
+          name: jsonld-report-live
+          path: prev-live
+          if_no_artifact_found: warn
+          search_artifacts: true
+        continue-on-error: true
+
+      - name: Re-validate JSON-LD against live site (regression gate)
         id: crawl
-        run: node scripts/validate-jsonld.mjs --crawl "${{ needs.deploy.outputs.page_url }}" --sample 5
+        run: |
+          if [ -f prev-live/jsonld-report.json ]; then
+            node scripts/validate-jsonld.mjs \
+              --crawl "${{ needs.deploy.outputs.page_url }}" \
+              --sample "${CRAWL_SAMPLE_SIZE}" \
+              --regression-gate \
+              --diff prev-live/jsonld-report.json
+          else
+            node scripts/validate-jsonld.mjs \
+              --crawl "${{ needs.deploy.outputs.page_url }}" \
+              --sample "${CRAWL_SAMPLE_SIZE}" \
+              --regression-gate
+          fi
         continue-on-error: true
 
       - name: Upload JSON-LD report (live crawl)
@@ -128,9 +192,11 @@ jobs:
           path: |
             jsonld-report.json
             jsonld-report.html
+            jsonld-diff.json
+            jsonld-diff.md
 
-      - name: Fail post-deploy only on CRITICAL findings
+      - name: Fail post-deploy only on JSON-LD REGRESSIONS
         if: steps.crawl.outcome == 'failure'
         run: |
-          echo "::error::Critical JSON-LD findings on live site. See artifact jsonld-report-live."
+          echo "::error::JSON-LD critical regressions detected on live site. See artifact jsonld-report-live."
           exit 1
