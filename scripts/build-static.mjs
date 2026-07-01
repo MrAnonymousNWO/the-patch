@@ -105,6 +105,7 @@ ${jsonld ? (Array.isArray(jsonld) ? jsonld : [jsonld]).map((j) => `<script type=
   <a href="/the-patch/pages/">Pages</a>
   <a href="/the-patch/search/">Search</a>
   <a href="https://wiki.technocracy.tech/" target="_blank" rel="noopener">Treaty Law Wiki</a>
+  <a href="/the-patch/diff/" style="margin-left:auto;font-size:.8rem;opacity:.7">Build diff</a>
 </header>
 <main>${body}</main>
 <footer>© ${new Date().getFullYear()} The Patch — Generated ${new Date().toISOString()}</footer>
